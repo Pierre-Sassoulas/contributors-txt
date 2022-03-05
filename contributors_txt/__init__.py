@@ -2,6 +2,6 @@
 Create a file listing the contributors of a git repository.
 """
 
-__all__ = ["main"]
+__all__ = ["create_contributors_txt"]
 
-from contributors_txt.create_contributor_list import main
+from contributors_txt.__main__ import create_contributors_txt
