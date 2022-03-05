@@ -36,7 +36,13 @@ class Person(NamedTuple):
 
     def __add__(self, other: "Person") -> "Person":  # type: ignore[override]
         assert self.name == other.name, f"{self.name} != {other.name}"
-        assert self.mail == other.mail, f"{self.mail} != {other.mail}"
+        assert (
+            self.mail == other.mail
+        ), f"""
+        "mails": ["{self.mail}","{other.mail}"],
+    "authoritative_mail": "{self.mail}",
+    "name": "{self.name}"
+"""
         return Person(
             self.number_of_commits + other.number_of_commits, self.name, self.mail
         )
