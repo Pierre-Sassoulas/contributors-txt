@@ -13,8 +13,10 @@ class Alias(NamedTuple):
     name: str
 
 
-def get_aliases(aliases_file: Union[Path, str]) -> List[Alias]:
+def get_aliases(aliases_file: Union[Path, str, None]) -> List[Alias]:
     aliases: List[Alias] = []
+    if aliases_file is None:
+        return aliases
     with open(aliases_file, encoding="utf8") as f:
         for alias in json.load(f):
             if "authoritative_mail" not in alias:
