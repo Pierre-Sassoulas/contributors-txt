@@ -1,2 +1,3 @@
-# automated-contributors
-Script to generate a list of contributors automatically
+# contributors-txt
+
+Generate a list of contributors automatically from git data
