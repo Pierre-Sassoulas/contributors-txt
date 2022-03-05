@@ -26,19 +26,19 @@ def get_aliases(aliases_file: Union[Path, str, None]) -> List[Alias]:
 
 
 class Person(NamedTuple):
-    number_of_commit: int
+    number_of_commits: int
     name: str
     mail: Optional[str]
 
     def __gt__(self, other: "Person") -> bool:  # type: ignore[override]
-        """Permit sorting contributors by number of commit."""
-        return self.number_of_commit.__gt__(other.number_of_commit)
+        """Permit sorting contributors by number of commits."""
+        return self.number_of_commits.__gt__(other.number_of_commits)
 
     def __add__(self, other: "Person") -> "Person":  # type: ignore[override]
         assert self.name == other.name, f"{self.name} != {other.name}"
         assert self.mail == other.mail, f"{self.mail} != {other.mail}"
         return Person(
-            self.number_of_commit + other.number_of_commit, self.name, self.mail
+            self.number_of_commits + other.number_of_commits, self.name, self.mail
         )
 
     def __str__(self) -> str:

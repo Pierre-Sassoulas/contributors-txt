@@ -33,7 +33,11 @@ def parse_args(args: Optional[List[str]] = None) -> argparse.Namespace:
         help="Where to output the contributor list",
     )
     parser.add_argument(
-        "-v", "--verbose", action="store_true", default=False, help="Logging or not"
+        "-v",
+        "--verbose",
+        action="store_true",
+        default=False,
+        help="Display logging messages",
     )
     parsed_args: argparse.Namespace = parser.parse_args(args)
     return parsed_args
