@@ -40,7 +40,7 @@ def parse_args(args: Optional[List[str]] = None) -> argparse.Namespace:
 
 
 def create_contributors_txt(
-    aliases_file: Union[Path, str], output: Union[Path, str], verbose: bool
+    aliases_file: Union[Path, str], output: Union[Path, str], verbose: bool = False
 ) -> None:
     aliases = get_aliases(aliases_file)
     if verbose:
