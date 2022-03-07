@@ -10,7 +10,7 @@ from contributors_txt.create_content import create_content
     [
         [
             "1 name <email@net.com>",
-            "(email@net.com)",
+            "<email@net.com>",
         ],
         [
             "1 another_name <email@net.com>",
@@ -18,8 +18,8 @@ from contributors_txt.create_content import create_content
         ],
         [
             "\n1 name <aemail@net.com>\n2 another_name <email@net.com>",
-            """- another_name (email@net.com)
-- name (aemail@net.com)
+            """- another_name <email@net.com>
+- name <aemail@net.com>
 """,
         ],
     ],

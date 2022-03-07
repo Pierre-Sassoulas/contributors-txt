@@ -48,7 +48,7 @@ class Person(NamedTuple):
         )
 
     def __str__(self) -> str:
-        return f"{self.name} ({self.mail})" if self.mail else f"{self.name}"
+        return f"{self.name} {self.mail}" if self.mail else f"{self.name}"
 
 
 def create_content(aliases: List[Alias], shortlog_output: str) -> str:
@@ -85,8 +85,8 @@ def _parse_person(unparsed_person: str, aliases: List[Alias]) -> Person:
     splitted_person = unparsed_person.split()
     number_of_commit, *names = splitted_person[:-1]
     name = " ".join(names)
-    mail: Optional[str] = splitted_person[-1][1:-1]
-    if mail == "none@none":
+    mail: Optional[str] = splitted_person[-1]
+    if mail == "<none@none>":
         mail = None
     for alias in aliases:
         if mail and mail in alias.mails:
