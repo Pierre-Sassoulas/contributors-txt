@@ -8,7 +8,11 @@ from pathlib import Path
 from typing import List, Optional, Union
 
 from contributors_txt.const import DEFAULT_CONTRIBUTOR_PATH
-from contributors_txt.create_content import create_content, get_aliases
+from contributors_txt.create_content import (
+    create_content,
+    get_aliases,
+    get_shortlog_output,
+)
 
 
 def main(args: Optional[List[str]] = None) -> None:
@@ -49,7 +53,7 @@ def create_contributors_txt(
     aliases = get_aliases(aliases_file)
     if verbose:
         logging.basicConfig(level=logging.DEBUG)
-    content = create_content(aliases)
+    content = create_content(aliases, get_shortlog_output())
     with open(output, "w", encoding="utf8") as f:
         f.write(content)
 

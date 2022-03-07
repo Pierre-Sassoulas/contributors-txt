@@ -1,4 +1,4 @@
-from unittest.mock import patch
+import logging
 
 import pytest
 
@@ -6,7 +6,7 @@ from contributors_txt.create_content import create_content
 
 
 @pytest.mark.parametrize(
-    "git_output,expected",
+    "shortlog_output,expected",
     [
         [
             "1 name <email@net.com>",
@@ -24,11 +24,7 @@ from contributors_txt.create_content import create_content
         ],
     ],
 )
-def test_basic(git_output: str, expected: str):
-    class Mock:
-        stdout = git_output.encode()
-
-    with patch("subprocess.run") as subprocess:
-        subprocess.return_value = Mock
-        result = create_content(aliases=[])
+def test_basic(shortlog_output: str, expected: str, caplog):
+    caplog.set_level(logging.DEBUG)
+    result = create_content(aliases=[], shortlog_output=shortlog_output)
     assert expected in result
