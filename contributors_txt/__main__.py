@@ -47,12 +47,16 @@ def parse_args(args: Optional[List[str]] = None) -> argparse.Namespace:
     return parsed_args
 
 
+def set_logging(verbose: bool) -> None:
+    if verbose:
+        logging.basicConfig(level=logging.DEBUG)
+
+
 def create_contributors_txt(
     aliases_file: Union[Path, str], output: Union[Path, str], verbose: bool = False
 ) -> None:
+    set_logging(verbose)
     aliases = get_aliases(aliases_file)
-    if verbose:
-        logging.basicConfig(level=logging.DEBUG)
     content = create_content(aliases, get_shortlog_output())
     with open(output, "w", encoding="utf8") as f:
         f.write(content)

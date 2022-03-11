@@ -3,7 +3,7 @@ import logging
 from pathlib import Path
 from typing import Dict, List, Optional, Union
 
-from contributors_txt.__main__ import parse_args
+from contributors_txt.__main__ import parse_args, set_logging
 from contributors_txt.create_content import Alias, get_aliases
 
 
@@ -19,8 +19,7 @@ def migrate_from_copyrite(
     aliases_file: Union[Path, str], output: Union[Path, str], verbose: bool = False
 ) -> None:
     aliases = get_aliases(aliases_file)
-    if verbose:
-        logging.basicConfig(level=logging.DEBUG)
+    set_logging(verbose)
     content = get_new_aliases(aliases)
     # logging.debug(content)
     with open(output, "w", encoding="utf8") as f:
