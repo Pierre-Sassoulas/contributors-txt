@@ -103,4 +103,4 @@ def _parse_person(unparsed_person: str, aliases: List[Alias]) -> Person:
             name = alias.name
             break
     logging.debug("Person is aliased to %s %s %s", number_of_commit, name, mail)
-    return Person(int(number_of_commit), name, f"<{mail}>")
+    return Person(int(number_of_commit), name, f"<{mail}>" if mail else None)
