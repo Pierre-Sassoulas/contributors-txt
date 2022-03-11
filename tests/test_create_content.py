@@ -26,5 +26,8 @@ from contributors_txt.create_content import create_content
 )
 def test_basic(shortlog_output: str, expected: str, caplog):
     caplog.set_level(logging.DEBUG)
-    result = create_content(aliases=[], shortlog_output=shortlog_output)
+    result = create_content(
+        aliases=[], shortlog_output=shortlog_output, configuration_file="foo.conf"
+    )
     assert expected in result
+    assert "using the configuration in 'foo.conf'" in result

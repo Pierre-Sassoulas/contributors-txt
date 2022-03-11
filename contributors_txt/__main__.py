@@ -57,7 +57,7 @@ def create_contributors_txt(
 ) -> None:
     set_logging(verbose)
     aliases = get_aliases(aliases_file)
-    content = create_content(aliases, get_shortlog_output())
+    content = create_content(aliases, get_shortlog_output(), str(aliases_file))
     with open(output, "w", encoding="utf8") as f:
         f.write(content)
 
