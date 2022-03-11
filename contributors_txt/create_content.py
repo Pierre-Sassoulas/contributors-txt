@@ -18,10 +18,16 @@ def get_aliases(aliases_file: Union[Path, str, None]) -> List[Alias]:
     if aliases_file is None:
         return aliases
     with open(aliases_file, encoding="utf8") as f:
-        for alias in json.load(f):
-            if "authoritative_mail" not in alias:
-                alias["authoritative_mail"] = None
-            aliases.append(Alias(**alias))
+        parsed_aliases = json.load(f)
+        for alias in parsed_aliases:
+            logging.debug("Alias: %s", alias)
+            if isinstance(alias, str):
+                python_alias = Alias(name=alias, **parsed_aliases[alias])
+            else:
+                if "authoritative_mail" not in alias:
+                    alias["authoritative_mail"] = None
+                python_alias = Alias(**alias)
+            aliases.append(python_alias)
     return aliases
 
 
