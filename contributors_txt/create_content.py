@@ -42,13 +42,15 @@ class Person(NamedTuple):
 
     def __add__(self, other: "Person") -> "Person":  # type: ignore[override]
         assert self.name == other.name, f"{self.name} != {other.name}"
-        assert (
-            self.mail == other.mail
-        ), f"""
-        "mails": ["{self.mail}","{other.mail}"],
-    "authoritative_mail": "{self.mail}",
-    "name": "{self.name}"
+        template = f"Mails are not the same: {self.mail} != {other.mail} for {self} vs {other}:\n"
+        template += f"{self.name}: "
+        template += "{"
+        template += f"""
+            mails": ["{self.mail}","{other.mail}"],
+            "authoritative_mail": "{self.mail}",
 """
+        template += "}"
+        assert self.mail == other.mail, template
         return Person(
             self.number_of_commits + other.number_of_commits, self.name, self.mail
         )
@@ -91,8 +93,8 @@ def _parse_person(unparsed_person: str, aliases: List[Alias]) -> Person:
     splitted_person = unparsed_person.split()
     number_of_commit, *names = splitted_person[:-1]
     name = " ".join(names)
-    mail: Optional[str] = splitted_person[-1]
-    if mail == "<none@none>":
+    mail: Optional[str] = splitted_person[-1][1:-1]
+    if mail == "none@none":
         mail = None
     for alias in aliases:
         if mail and mail in alias.mails:
@@ -101,4 +103,4 @@ def _parse_person(unparsed_person: str, aliases: List[Alias]) -> Person:
             name = alias.name
             break
     logging.debug("Person is aliased to %s %s %s", number_of_commit, name, mail)
-    return Person(int(number_of_commit), name, mail)
+    return Person(int(number_of_commit), name, f"<{mail}>")
