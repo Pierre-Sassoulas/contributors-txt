@@ -90,8 +90,8 @@ def create_content(
     team_members = [p for p in sorted(persons.values(), reverse=True) if p.team]
     if team_members:
         result += """\
-Mainteners
-----------
+Maintainers
+-----------
 """
         for person in team_members:
             result += f"- {person}\n"
