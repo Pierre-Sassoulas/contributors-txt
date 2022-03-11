@@ -11,6 +11,7 @@ class Alias(NamedTuple):
     mails: List[str]
     authoritative_mail: Optional[str]
     name: str
+    team: Optional[bool]
 
 
 def get_aliases(aliases_file: Union[Path, str, None]) -> List[Alias]:
@@ -22,6 +23,8 @@ def get_aliases(aliases_file: Union[Path, str, None]) -> List[Alias]:
         for alias in parsed_aliases:
             logging.debug("Alias: %s", alias)
             if isinstance(alias, str):
+                if "team" not in parsed_aliases[alias]:
+                    parsed_aliases[alias]["team"] = False
                 python_alias = Alias(name=alias, **parsed_aliases[alias])
             else:
                 if "authoritative_mail" not in alias:
@@ -35,6 +38,7 @@ class Person(NamedTuple):
     number_of_commits: int
     name: str
     mail: Optional[str]
+    team: bool
 
     def __gt__(self, other: "Person") -> bool:  # type: ignore[override]
         """Permit sorting contributors by number of commits."""
@@ -48,11 +52,16 @@ class Person(NamedTuple):
         template += f"""
             mails": ["{self.mail}","{other.mail}"],
             "authoritative_mail": "{self.mail}",
+            "team": {self.team}
 """
         template += "}"
         assert self.mail == other.mail, template
+        assert self.team == other.team
         return Person(
-            self.number_of_commits + other.number_of_commits, self.name, self.mail
+            self.number_of_commits + other.number_of_commits,
+            self.name,
+            self.mail,
+            self.team,
         )
 
     def __str__(self) -> str:
@@ -67,8 +76,6 @@ def create_content(
 # using the configuration in '{configuration_file}'
 # please do not modify manually
 
-Contributors
-------------
 """
     persons: Dict[str, Person] = {}
     for unparsed_person in shortlog_output.split("\n"):
@@ -80,7 +87,22 @@ Contributors
         if new_person.name in persons:
             new_person = persons[new_person.name] + new_person
         persons[new_person.name] = new_person
+    team_members = [p for p in sorted(persons.values(), reverse=True) if p.team]
+    if team_members:
+        result += """\
+Mainteners
+----------
+"""
+        for person in team_members:
+            result += f"- {person}\n"
+        result += "\n\n"
+    result += """\
+Contributors
+------------
+"""
     for person in sorted(persons.values(), reverse=True):
+        if person.team:
+            continue
         if person.mail in NO_SHOW_MAIL or person.name in NO_SHOW_NAME:
             continue
         result += f"- {person}\n"
@@ -97,6 +119,7 @@ def _parse_person(unparsed_person: str, aliases: List[Alias]) -> Person:
     number_of_commit, *names = splitted_person[:-1]
     name = " ".join(names)
     mail: Optional[str] = splitted_person[-1][1:-1]
+    team = False
     if mail == "none@none":
         mail = None
     for alias in aliases:
@@ -104,6 +127,7 @@ def _parse_person(unparsed_person: str, aliases: List[Alias]) -> Person:
             logging.debug("Found an alias: %s", mail)
             mail = alias.authoritative_mail
             name = alias.name
+            team = bool(alias.team)
             break
     logging.debug("Person is aliased to %s %s %s", number_of_commit, name, mail)
-    return Person(int(number_of_commit), name, f"<{mail}>" if mail else None)
+    return Person(int(number_of_commit), name, f"<{mail}>" if mail else None, team)
