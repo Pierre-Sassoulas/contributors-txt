@@ -13,6 +13,7 @@ from contributors_txt.create_content import (
     get_aliases,
     get_shortlog_output,
 )
+from contributors_txt.update_content import update_content
 
 
 def main(args: Optional[List[str]] = None) -> None:
@@ -57,7 +58,11 @@ def create_contributors_txt(
 ) -> None:
     set_logging(verbose)
     aliases = get_aliases(aliases_file)
-    content = create_content(aliases, get_shortlog_output(), str(aliases_file))
+    shortlog_output = get_shortlog_output()
+    if Path(output).is_file():
+        content = update_content(output, aliases, shortlog_output, str(aliases_file))
+    else:
+        content = create_content(aliases, shortlog_output, str(aliases_file))
     with open(output, "w", encoding="utf8") as f:
         f.write(content)
 
