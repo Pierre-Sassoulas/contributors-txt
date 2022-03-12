@@ -100,25 +100,42 @@ def create_content(
         if new_person.name in persons:
             new_person = persons[new_person.name] + new_person
         persons[new_person.name] = new_person
-    team_members = [p for p in sorted(persons.values(), reverse=True) if p.team]
-    if team_members:
-        result += """\
-Maintainers
------------
-"""
-        for person in team_members:
-            result += f"- {person}\n"
-        result += "\n\n"
-    result += """\
+    result += add_teams(persons)
+    result += add_contributors(persons)
+    return result
+
+
+def add_contributors(persons):
+    result = """\
 Contributors
 ------------
 """
     for person in sorted(persons.values(), reverse=True):
-        if person.team:
+        if person.team != DEFAULT_TEAM_ROLE:
             continue
         if person.mail in NO_SHOW_MAIL or person.name in NO_SHOW_NAME:
             continue
         result += f"- {person}\n"
+    return result
+
+
+def add_teams(persons):
+    result = ""
+    teams = {}
+    for person in sorted(persons.values(), reverse=True):
+        if person.team != DEFAULT_TEAM_ROLE:
+            members = teams.get(person.team, [])
+            members.append(person)
+            teams[person.team] = members
+    if teams:
+        for team_name, team_members in teams.items():
+            result += f"""\
+{team_name}
+{len(team_name) * '-'}
+"""
+            for team_member in team_members:
+                result += f"- {team_member}\n"
+            result += "\n\n"
     return result
 
 
