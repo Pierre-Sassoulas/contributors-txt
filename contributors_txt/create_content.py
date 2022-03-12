@@ -93,6 +93,15 @@ def create_content(
 # please do not modify manually
 
 """
+    persons = persons_from_shortlog(aliases, shortlog_output)
+    result += add_teams(persons)
+    result += add_contributors(persons)
+    return result
+
+
+def persons_from_shortlog(
+    aliases: List[Alias], shortlog_output: str
+) -> Dict[str, Person]:
     persons: Dict[str, Person] = {}
     for unparsed_person in shortlog_output.split("\n"):
         if not unparsed_person:
@@ -103,9 +112,7 @@ def create_content(
         if new_person.name in persons:
             new_person = persons[new_person.name] + new_person
         persons[new_person.name] = new_person
-    result += add_teams(persons)
-    result += add_contributors(persons)
-    return result
+    return persons
 
 
 def add_contributors(persons):
