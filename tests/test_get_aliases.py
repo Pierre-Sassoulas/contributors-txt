@@ -6,7 +6,7 @@ from contributors_txt.create_content import Alias, get_aliases
 aliases_file = Path(__file__).parent / ".contributors_aliases.json"
 
 
-def test_basic() -> None:
+def test_basic(recwarn) -> None:
     aliases = get_aliases(aliases_file)
     assert aliases == [
         Alias(
@@ -25,3 +25,5 @@ def test_basic() -> None:
             team=DEFAULT_TEAM_ROLE,
         ),
     ]
+    assert len(recwarn) == 1
+    assert "old copyrite format" in str(recwarn.pop())

@@ -12,14 +12,16 @@ def main(args: Optional[List[str]] = None) -> None:
     parsed_args = parse_args(args)
     if parsed_args.output is None:
         parsed_args.output = parsed_args.aliases
-    logging.debug("Launching migration with %s", args)
-    migrate_from_copyrite(parsed_args.aliases, parsed_args.output, parsed_args.verbose)
+    logging.debug("Launching normalization with %s", args)
+    normalize_configuration(
+        parsed_args.aliases, parsed_args.output, parsed_args.verbose
+    )
 
 
-def migrate_from_copyrite(
+def normalize_configuration(
     aliases_file: Union[Path, str], output: Union[Path, str], verbose: bool = False
 ) -> None:
-    aliases = get_aliases(aliases_file)
+    aliases = get_aliases(aliases_file, normalize=True)
     set_logging(verbose)
     content = get_new_aliases(aliases)
     with open(output, "w", encoding="utf8") as f:

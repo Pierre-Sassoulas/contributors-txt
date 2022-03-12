@@ -1,6 +1,7 @@
 import json
 import logging
 import subprocess
+import warnings
 from pathlib import Path
 from typing import Dict, List, NamedTuple, Optional, Union
 
@@ -19,7 +20,7 @@ class Alias(NamedTuple):
     team: str
 
 
-def get_aliases(aliases_file: Union[Path, str, None]) -> List[Alias]:
+def get_aliases(aliases_file: Union[Path, str, None], normalize=False) -> List[Alias]:
     aliases: List[Alias] = []
     if aliases_file is None:
         return aliases
@@ -32,6 +33,11 @@ def get_aliases(aliases_file: Union[Path, str, None]) -> List[Alias]:
                     parsed_aliases[alias]["team"] = DEFAULT_TEAM_ROLE
                 python_alias = Alias(name=alias, **parsed_aliases[alias])
             else:
+                if not normalize:
+                    warnings.warn(
+                        "Using old copyrite format, you should use the configuration "
+                        "normalization with 'contributors-txt-normalize-configuration'"
+                    )
                 if "authoritative_mail" not in alias:
                     alias["authoritative_mail"] = None
                 if "team" not in alias:

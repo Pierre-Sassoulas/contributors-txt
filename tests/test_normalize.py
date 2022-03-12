@@ -1,7 +1,7 @@
 import logging
 from pathlib import Path
 
-from contributors_txt.migration_copyrite import main
+from contributors_txt.normalize import main
 
 HERE = Path(__file__).parent
 contributors_aliases = HERE / ".contributors_aliases.json"
@@ -22,7 +22,7 @@ EXPECTED = """{
 }"""
 
 
-def test_basic(tmp_path, caplog) -> None:
+def test_basic(tmp_path, caplog, recwarn) -> None:
     caplog.set_level(logging.DEBUG)
     output = tmp_path / ".contributors_aliases.json"
     main(["-v", "-a", str(contributors_aliases), "-o", str(output)])
@@ -34,3 +34,4 @@ def test_basic(tmp_path, caplog) -> None:
     with open(new_output, encoding="utf8") as f:
         content = f.read()
     assert content == EXPECTED
+    assert not recwarn
