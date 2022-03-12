@@ -131,22 +131,31 @@ Contributors
 
 def add_teams(persons):
     result = ""
+    teams = get_teams(persons)
+    if teams:
+        for team_name, team_members in teams.items():
+            result += get_team_header(team_name)
+            for team_member in team_members:
+                result += f"- {team_member}\n"
+            result += "\n\n"
+    return result
+
+
+def get_team_header(team_name):
+    return f"""\
+{team_name}
+{len(team_name) * '-'}
+"""
+
+
+def get_teams(persons):
     teams = {}
     for person in sorted(persons.values(), reverse=True):
         if person.team != DEFAULT_TEAM_ROLE:
             members = teams.get(person.team, [])
             members.append(person)
             teams[person.team] = members
-    if teams:
-        for team_name, team_members in teams.items():
-            result += f"""\
-{team_name}
-{len(team_name) * '-'}
-"""
-            for team_member in team_members:
-                result += f"- {team_member}\n"
-            result += "\n\n"
-    return result
+    return teams
 
 
 def get_shortlog_output() -> str:
