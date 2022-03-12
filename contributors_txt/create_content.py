@@ -66,10 +66,10 @@ class Person(NamedTuple):
         other_mail = other.mail[1:-1] if other.mail is not None else ""
         template += f"""
             "mails": ["{mail}","{other_mail}"],
-            "authoritative_mail": "{mail}",
+            "authoritative_mail": "{mail}"
 """
         if self.team != DEFAULT_TEAM_ROLE:
-            template += f'"team": "{self.team}"'
+            template += f',\n"team": "{self.team}"'
         template += "}"
         assert self.mail == other.mail, template
         assert self.team == other.team
