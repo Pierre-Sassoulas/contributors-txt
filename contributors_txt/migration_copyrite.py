@@ -4,6 +4,7 @@ from pathlib import Path
 from typing import Dict, List, Optional, Union
 
 from contributors_txt.__main__ import parse_args, set_logging
+from contributors_txt.const import DEFAULT_TEAM_ROLE
 from contributors_txt.create_content import Alias, get_aliases
 
 
@@ -27,10 +28,13 @@ def migrate_from_copyrite(
 
 
 def get_new_aliases(aliases: List[Alias]) -> Dict:
-    return {
-        alias.name: {
+    result = {}
+    for alias in aliases:
+        updated_alias = {
             "mails": alias.mails,
             "authoritative_mail": alias.authoritative_mail,
         }
-        for alias in aliases
-    }
+        if alias.team != DEFAULT_TEAM_ROLE:
+            updated_alias["team"] = alias.team
+        result[alias.name] = updated_alias
+    return result

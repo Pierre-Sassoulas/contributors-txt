@@ -4,14 +4,19 @@ import subprocess
 from pathlib import Path
 from typing import Dict, List, NamedTuple, Optional, Union
 
-from contributors_txt.const import GIT_SHORTLOG, NO_SHOW_MAIL, NO_SHOW_NAME
+from contributors_txt.const import (
+    DEFAULT_TEAM_ROLE,
+    GIT_SHORTLOG,
+    NO_SHOW_MAIL,
+    NO_SHOW_NAME,
+)
 
 
 class Alias(NamedTuple):
     mails: List[str]
     authoritative_mail: Optional[str]
     name: str
-    team: Optional[bool]
+    team: str
 
 
 def get_aliases(aliases_file: Union[Path, str, None]) -> List[Alias]:
@@ -24,7 +29,8 @@ def get_aliases(aliases_file: Union[Path, str, None]) -> List[Alias]:
             logging.debug("Alias: %s", alias)
             if isinstance(alias, str):
                 if "team" not in parsed_aliases[alias]:
-                    parsed_aliases[alias]["team"] = False
+
+                    parsed_aliases[alias]["team"] = DEFAULT_TEAM_ROLE
                 python_alias = Alias(name=alias, **parsed_aliases[alias])
             else:
                 if "authoritative_mail" not in alias:
@@ -38,7 +44,7 @@ class Person(NamedTuple):
     number_of_commits: int
     name: str
     mail: Optional[str]
-    team: bool
+    team: str
 
     def __gt__(self, other: "Person") -> bool:  # type: ignore[override]
         """Permit sorting contributors by number of commits."""
@@ -119,7 +125,6 @@ def _parse_person(unparsed_person: str, aliases: List[Alias]) -> Person:
     number_of_commit, *names = splitted_person[:-1]
     name = " ".join(names)
     mail: Optional[str] = splitted_person[-1][1:-1]
-    team = False
     if mail == "none@none":
         mail = None
     for alias in aliases:
@@ -127,7 +132,7 @@ def _parse_person(unparsed_person: str, aliases: List[Alias]) -> Person:
             logging.debug("Found an alias: %s", mail)
             mail = alias.authoritative_mail
             name = alias.name
-            team = bool(alias.team)
+            team = alias.team
             break
     logging.debug("Person is aliased to %s %s %s", number_of_commit, name, mail)
     return Person(int(number_of_commit), name, f"<{mail}>" if mail else None, team)
