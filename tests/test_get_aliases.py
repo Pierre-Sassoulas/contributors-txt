@@ -1,5 +1,6 @@
 from pathlib import Path
 
+from contributors_txt.const import DEFAULT_TEAM_ROLE
 from contributors_txt.create_content import Alias, get_aliases
 
 aliases_file = Path(__file__).parent / ".contributors_aliases.json"
@@ -15,10 +16,12 @@ def test_basic() -> None:
             ],
             authoritative_mail="bot@noreply.github.com",
             name="bot",
+            team=DEFAULT_TEAM_ROLE,
         ),
         Alias(
             mails=["66853113+pre-commit-ci[bot]@users.noreply.github.com"],
             authoritative_mail="bot@noreply.github.com",
             name="pre-commit-ci[bot]",
+            team=DEFAULT_TEAM_ROLE,
         ),
     ]

@@ -29,12 +29,13 @@ def get_aliases(aliases_file: Union[Path, str, None]) -> List[Alias]:
             logging.debug("Alias: %s", alias)
             if isinstance(alias, str):
                 if "team" not in parsed_aliases[alias]:
-
                     parsed_aliases[alias]["team"] = DEFAULT_TEAM_ROLE
                 python_alias = Alias(name=alias, **parsed_aliases[alias])
             else:
                 if "authoritative_mail" not in alias:
                     alias["authoritative_mail"] = None
+                if "team" not in alias:
+                    alias["team"] = DEFAULT_TEAM_ROLE
                 python_alias = Alias(**alias)
             aliases.append(python_alias)
     return aliases
@@ -125,6 +126,7 @@ def _parse_person(unparsed_person: str, aliases: List[Alias]) -> Person:
     number_of_commit, *names = splitted_person[:-1]
     name = " ".join(names)
     mail: Optional[str] = splitted_person[-1][1:-1]
+    team = DEFAULT_TEAM_ROLE
     if mail == "none@none":
         mail = None
     for alias in aliases:
