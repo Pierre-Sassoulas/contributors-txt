@@ -22,9 +22,8 @@ def migrate_from_copyrite(
     aliases = get_aliases(aliases_file)
     set_logging(verbose)
     content = get_new_aliases(aliases)
-    # logging.debug(content)
     with open(output, "w", encoding="utf8") as f:
-        json.dump(content, f, indent=4, sort_keys=True)
+        json.dump(content, f, indent=4, sort_keys=True, ensure_ascii=False)
 
 
 def get_new_aliases(aliases: List[Alias]) -> Dict:
