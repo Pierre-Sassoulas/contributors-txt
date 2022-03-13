@@ -1,4 +1,5 @@
 import logging
+from difflib import SequenceMatcher
 from pathlib import Path
 from typing import Dict, List, Tuple, Union
 
@@ -12,6 +13,10 @@ from contributors_txt.create_content import (
 )
 
 
+def similar(a_string: str, another_string: str) -> float:
+    return SequenceMatcher(None, a_string, another_string).ratio()
+
+
 def update_content(
     output: Union[Path, str],
     aliases: List[Alias],
@@ -22,29 +27,19 @@ def update_content(
     header: str = f"""\
 # This file is autocompleted by 'contributors-txt',
 # using the configuration in '{configuration_file}'.
-# Do not modify titles or lines with name / email
-# Please verify that your change are stable if you
-# modify manually.
+# Do not add new persons manually and only add information without
+# using '-' as the line first character.
+# Please verify that your change are stable if you modify manually.
 
 """
     persons = persons_from_shortlog(aliases, shortlog_output)
     with open(output, encoding="utf8") as f:
         current_output = f.read()
     result = update_teams(
-        current_output if header in current_output else header + current_output, persons
+        current_output if header in current_output else header + current_output,
+        persons,
     )
     return result
-
-
-# def update_contributors(persons):
-#     result = get_team_header(DEFAULT_TEAM_ROLE)
-#     for person in sorted(persons.values(), reverse=True):
-#         if person.team != DEFAULT_TEAM_ROLE:
-#             continue
-#         if person.mail in NO_SHOW_MAIL or person.name in NO_SHOW_NAME:
-#             continue
-#         result += f"- {person}\n"
-#     return result
 
 
 def update_teams(current_result: str, persons: Dict[str, Person]):
@@ -52,7 +47,7 @@ def update_teams(current_result: str, persons: Dict[str, Person]):
     if not teams:
         return current_result
     current_result = add_email_if_missing(current_result, teams)
-    current_result = order_by_commit(current_result, teams)
+    # current_result = order_by_commit(current_result, teams)
     return current_result + "\n"
 
 
@@ -71,35 +66,59 @@ def order_by_commit(current_result, teams) -> str:
 def order_by_commit_in_team(
     current_result, team_boundary, team_members, team_name
 ) -> str:
+    # pylint: disable=too-many-locals
     logging.debug("Updating team %s", team_name)
     begin, end = team_boundary[team_name]
-    new_team = []
+    new_team: List[str] = []
     existing_persons = current_result[begin:end].split("\n-")
     logging.debug(existing_persons[0])
-    consumed = []
-    for team_member in team_members:
+    consumed: List[int] = []
+    for _, team_member in enumerate(team_members):
         if not person_should_be_shown(team_member):
             continue
-        # logging.debug(f"Finding the content for {team_member}")
+        # logging.debug(f"Finding the content for %s", repr(team_member))
         person_found = False
+        person_found_by_name = False
         for i, existing_person in enumerate(existing_persons):
             if team_member.mail and team_member.mail in existing_person:
                 # logging.debug(f"Placing {team_member.name}: {existing_person}")
-                new_team.append(existing_person)
-                person_found = True
-                consumed.append(i)
-                break
-            # if team_member.mail is None and team_member.name in existing_person:
-            #     logging.debug(f"Placing {team_member.name} by name: {existing_person}")
-            #     new_team.append(existing_person)
-            #     break
-        if not person_found:
+                # if person_found:
+                #     raise RuntimeError(f"{team_member.mail} is duplicated {existing_person}!")
+                person_found = add_person(
+                    consumed, existing_person, i, new_team, person_found
+                )
+            if team_member.name in existing_person and team_member.mail is None:
+                if similar(team_member.name, existing_person) >= 0.9:
+                    logging.info(
+                        "Found %s by name and it's really close.", repr(team_member)
+                    )
+                    person_found = add_person(
+                        consumed, existing_person, i, new_team, person_found
+                    )
+                else:
+                    # The name is not sufficient
+                    logging.warning(
+                        "Found %s in '%s' but not sure if it's really them (no mail),"
+                        " please check",
+                        repr(team_member),
+                        existing_person,
+                    )
+                    person_found_by_name = True
+        if not person_found and not person_found_by_name:
             logging.debug("Could not find %s in %s !", team_member, team_name)
-            new_team.append(f" {team_member}")
+            # new_team.insert(team_index, f" {team_member}")
     for i, person_not_found in enumerate(existing_persons):
         if i not in consumed:
+            logging.debug("%s, '%s' was not consumed.", i, person_not_found)
             new_team.insert(i, person_not_found)
     return "\n-".join(new_team)
+
+
+def add_person(consumed, existing_person, i, new_team, person_found):
+    new_team.append(existing_person)
+    person_found = True
+    consumed.append(i)
+    return person_found
 
 
 def add_email_if_missing(current_result, teams):
@@ -131,14 +150,15 @@ def add_email_if_missing(current_result, teams):
                             team_member.name,
                         )
                     continue
-            if team_member.mail is not None and team_member.mail in current_result:
+            elif team_member.mail is not None and team_member.mail in current_result:
                 raise RuntimeError(
                     f"'{team_member}' already exists in the file at "
                     f"{current_result.find(team_member.name)} "
                     f"({team_boundary}) but is not in the proper section, it should"
                     f"be '{team_name}', please fix manually."
                 )
-            new_team += line_for_person(team_member)
+            else:
+                new_team += line_for_person(team_member)
         new_teams.append(new_team)
     return "".join(new_teams)
 
