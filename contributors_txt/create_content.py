@@ -116,10 +116,7 @@ def persons_from_shortlog(
 
 
 def add_contributors(persons):
-    result = """\
-Contributors
-------------
-"""
+    result = get_team_header(DEFAULT_TEAM_ROLE)
     for person in sorted(persons.values(), reverse=True):
         if person.team != DEFAULT_TEAM_ROLE:
             continue
