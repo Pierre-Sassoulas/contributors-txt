@@ -120,10 +120,14 @@ def add_contributors(persons):
     for person in sorted(persons.values(), reverse=True):
         if person.team != DEFAULT_TEAM_ROLE:
             continue
-        if person.mail in NO_SHOW_MAIL or person.name in NO_SHOW_NAME:
+        if not person_should_be_shown(person):
             continue
         result += f"- {person}\n"
     return result
+
+
+def person_should_be_shown(person: Person) -> bool:
+    return person.mail not in NO_SHOW_MAIL and person.name not in NO_SHOW_NAME
 
 
 def add_teams(persons):
