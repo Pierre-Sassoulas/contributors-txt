@@ -105,8 +105,8 @@ def order_by_commit_in_team(
 def add_email_if_missing(current_result, teams):
     new_teams: List[str] = []
     team_boundary = get_team_boundary(current_result, list(teams.keys()))
-    bound = team_boundary["Header"]
-    new_teams.append(current_result[bound[0] : bound[1]])
+    being_header, end_header = team_boundary["Header"]
+    new_teams.append(current_result[being_header:end_header])
     for team_name, team_members in teams.items():
         logging.debug("Updating team %s", team_name)
         begin, end = team_boundary[team_name]
@@ -133,9 +133,10 @@ def add_email_if_missing(current_result, teams):
                     continue
             if team_member.mail is not None and team_member.mail in current_result:
                 raise RuntimeError(
-                    f"{team_member} already exists in the file but is not in the "
-                    f"proper section, it should be {team_name}, please fix "
-                    f"manually."
+                    f"'{team_member}' already exists in the file at "
+                    f"{current_result.find(team_member.name)} "
+                    f"({team_boundary}) but is not in the proper section, it should"
+                    f"be '{team_name}', please fix manually."
                 )
             new_team += line_for_person(team_member)
         new_teams.append(new_team)
