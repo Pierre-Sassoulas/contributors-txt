@@ -146,17 +146,15 @@ def add_email_if_missing(current_result, teams):
 def get_team_boundary(
     current_result: str, teams: List[str]
 ) -> Dict[str, Tuple[int, int]]:
-    teams_boundary: Dict[str, Tuple[int, int]] = {}
-    last_boundary = 0
-    end = len(current_result)
-    for i, team in enumerate(teams):
-        # logging.debug("Handling %s", (i, team))
-        team_name = teams[i - 1] if i > 0 else "Header"
-        if team not in current_result:
-            teams_boundary[team_name] = (0, end)
+    teams_boundary: Dict[str, Tuple[int, int]] = {"Header": (0, 0)}
+    for team in teams:
+        teams_boundary[team] = current_result.find(team), 0
+    ordered_teams = sorted(teams_boundary, key=teams_boundary.get)  # type: ignore[arg-type]
+    for i, team in enumerate(ordered_teams):
+        begin = teams_boundary[team][0]
+        if i == len(ordered_teams) - 1:
+            end = len(current_result)
         else:
-            next_boundary = current_result.find(team)
-            teams_boundary[team_name] = (last_boundary, next_boundary)
-            last_boundary = next_boundary
-    teams_boundary[teams[-1]] = (last_boundary, end)
+            end = teams_boundary[ordered_teams[i + 1]][0]
+        teams_boundary[team] = (begin, end)
     return teams_boundary
