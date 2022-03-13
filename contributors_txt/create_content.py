@@ -149,10 +149,10 @@ def get_team_header(team_name):
 """
 
 
-def get_teams(persons):
-    teams = {}
+def get_teams(persons, exclude_standard=True) -> Dict[str, List[Person]]:
+    teams: Dict[str, List[Person]] = {}
     for person in sorted(persons.values(), reverse=True):
-        if person.team != DEFAULT_TEAM_ROLE:
+        if person.team != DEFAULT_TEAM_ROLE or not exclude_standard:
             members = teams.get(person.team, [])
             members.append(person)
             teams[person.team] = members
