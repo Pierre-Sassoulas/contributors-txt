@@ -1,5 +1,4 @@
 import json
-import logging
 import subprocess
 import warnings
 from pathlib import Path
@@ -27,11 +26,16 @@ def get_aliases(aliases_file: Union[Path, str, None], normalize=False) -> List[A
     with open(aliases_file, encoding="utf8") as f:
         parsed_aliases = json.load(f)
         for alias in parsed_aliases:
-            logging.debug("Alias: %s", alias)
+            # logging.debug("Alias: %s", alias)
             if isinstance(alias, str):
                 if "team" not in parsed_aliases[alias]:
                     parsed_aliases[alias]["team"] = DEFAULT_TEAM_ROLE
-                python_alias = Alias(name=alias, **parsed_aliases[alias])
+                if "name" in parsed_aliases[alias]:
+                    python_alias = Alias(
+                        authoritative_mail=alias, **parsed_aliases[alias]
+                    )
+                elif "authoritative_mail" in parsed_aliases[alias]:
+                    python_alias = Alias(name=alias, **parsed_aliases[alias])
             else:
                 if not normalize:
                     warnings.warn(
@@ -71,7 +75,7 @@ class Person(NamedTuple):
         if self.team != DEFAULT_TEAM_ROLE:
             template += f',\n"team": "{self.team}"'
         template += "}"
-        assert self.mail == other.mail, template
+        assert other.mail is None or self.mail == other.mail, template
         assert self.team == other.team
         return Person(
             self.number_of_commits + other.number_of_commits,
@@ -107,7 +111,7 @@ def persons_from_shortlog(
         if not unparsed_person:
             # Empty line in git output
             continue
-        logging.debug("Handling %s", unparsed_person)
+        # logging.debug("Handling %s", unparsed_person)
         new_person = _parse_person(unparsed_person, aliases)
         if new_person.name in persons:
             new_person = persons[new_person.name] + new_person
@@ -122,8 +126,12 @@ def add_contributors(persons):
             continue
         if not person_should_be_shown(person):
             continue
-        result += f"- {person}\n"
+        result += line_for_person(person)
     return result
+
+
+def line_for_person(person: Person) -> str:
+    return f"- {person}\n"
 
 
 def person_should_be_shown(person: Person) -> bool:
@@ -137,7 +145,7 @@ def add_teams(persons):
         for team_name, team_members in teams.items():
             result += get_team_header(team_name)
             for team_member in team_members:
-                result += f"- {team_member}\n"
+                result += line_for_person(team_member)
             result += "\n\n"
     return result
 
@@ -174,10 +182,10 @@ def _parse_person(unparsed_person: str, aliases: List[Alias]) -> Person:
         mail = None
     for alias in aliases:
         if mail and mail in alias.mails:
-            logging.debug("Found an alias: %s", mail)
+            # logging.debug("Found an alias: %s", mail)
             mail = alias.authoritative_mail
             name = alias.name
             team = alias.team
             break
-    logging.debug("Person is aliased to %s %s %s", number_of_commit, name, mail)
+    # logging.debug("Person is aliased to %s %s %s", number_of_commit, name, mail)
     return Person(int(number_of_commit), name, f"<{mail}>" if mail else None, team)

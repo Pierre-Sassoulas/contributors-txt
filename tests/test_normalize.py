@@ -6,18 +6,11 @@ from contributors_txt.normalize import main
 HERE = Path(__file__).parent
 contributors_aliases = HERE / ".contributors_aliases.json"
 EXPECTED = """{
-    "bot": {
-        "authoritative_mail": "bot@noreply.github.com",
-        "mails": [
-            "66853113+pre-commit-ci[bot]@users.noreply.github.com",
-            "49699333+dependabot[bot]@users.noreply.github.com"
-        ]
-    },
-    "pre-commit-ci[bot]": {
-        "authoritative_mail": "bot@noreply.github.com",
+    "bot@noreply.github.com": {
         "mails": [
             "66853113+pre-commit-ci[bot]@users.noreply.github.com"
-        ]
+        ],
+        "name": "pre-commit-ci[bot]"
     }
 }"""
 

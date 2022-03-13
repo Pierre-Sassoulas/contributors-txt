@@ -33,9 +33,9 @@ def get_new_aliases(aliases: List[Alias]) -> Dict:
     for alias in aliases:
         updated_alias = {
             "mails": alias.mails,
-            "authoritative_mail": alias.authoritative_mail,
+            "name": alias.name,
         }
         if alias.team != DEFAULT_TEAM_ROLE:
             updated_alias["team"] = alias.team
-        result[alias.name] = updated_alias
+        result[alias.authoritative_mail] = updated_alias
     return result
