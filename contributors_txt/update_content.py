@@ -153,11 +153,13 @@ def add_email_if_missing(current_result, teams):
                         )
                     continue
             elif team_member.mail is not None and team_member.mail in current_result:
+                base_message = (f"'{team_member}' already exists in the file at "
+                            f"{current_result.find(team_member.name)} "
+                            f"({team_boundary}) but is not in the proper section, it should"
+                            f"be '{team_name}', please fix manually. Did you consider uniformizing the name ? :\n")
                 raise RuntimeError(
-                    f"'{team_member}' already exists in the file at "
-                    f"{current_result.find(team_member.name)} "
-                    f"({team_boundary}) but is not in the proper section, it should"
-                    f"be '{team_name}', please fix manually."
+                    team_member.get_template(base_message) + "}\n"
+
                 )
             else:
                 new_team += line_for_person(team_member)
