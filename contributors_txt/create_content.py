@@ -64,13 +64,13 @@ class Person(NamedTuple):
     def __add__(self, other: "Person") -> "Person":  # type: ignore[override]
         assert self.name == other.name, f"{self.name} != {other.name}"
         template = f"Mails are not the same: {self.mail} != {other.mail} for {self} vs {other}:\n"
-        template += f'"{self.name}": '
+        template += f'"{self.mail}": '
         template += "{"
         mail = self.mail[1:-1] if self.mail is not None else ""
         other_mail = other.mail[1:-1] if other.mail is not None else ""
         template += f"""
             "mails": ["{mail}","{other_mail}"],
-            "authoritative_mail": "{mail}"
+            "name": "{self.name}"
 """
         if self.team != DEFAULT_TEAM_ROLE:
             template += f',\n"team": "{self.team}"'
