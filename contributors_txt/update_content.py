@@ -148,8 +148,8 @@ def add_email_if_missing(current_result, teams):
                         )
                     else:
                         logging.debug(
-                            "There's only one word in %s not replacing anything.",
-                            team_member.name,
+                            "For %s, there's only one word not replacing anything but it exists.",
+                            repr(team_member),
                         )
                     continue
             elif team_member.mail is not None and team_member.mail in current_result:
