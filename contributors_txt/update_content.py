@@ -48,7 +48,9 @@ def update_teams(current_result: str, persons: Dict[str, Person]):
         return current_result
     current_result = add_email_if_missing(current_result, teams)
     # current_result = order_by_commit(current_result, teams)
-    return current_result + "\n"
+    if current_result[-1] != "\n":
+        current_result += "\n"
+    return current_result
 
 
 def order_by_commit(current_result, teams) -> str:
