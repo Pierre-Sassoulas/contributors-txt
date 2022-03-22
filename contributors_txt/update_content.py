@@ -47,10 +47,17 @@ def update_teams(current_result: str, persons: Dict[str, Person]):
     if not teams:
         return current_result
     current_result = add_email_if_missing(current_result, teams)
+    check_no_email(current_result)
     # current_result = order_by_commit(current_result, teams)
     if current_result[-1] != "\n":
         current_result += "\n"
     return current_result
+
+
+def check_no_email(current_result: str) -> None:
+    for part in current_result.split("\n-"):
+        if all(c not in part for c in [">", "<", "@"]):
+            logging.warning("There's no email in %s", part)
 
 
 def order_by_commit(current_result, teams) -> str:
@@ -148,21 +155,26 @@ def add_email_if_missing(current_result, teams):
                         )
                     else:
                         logging.debug(
-                            "For %s, there's only one word not replacing anything but it exists.",
+                            "For %s, there's only a one word name not replacing "
+                            "anything but it exists.",
                             repr(team_member),
                         )
                     continue
             elif team_member.mail is not None and team_member.mail in current_result:
-                base_message = (f"'{team_member}' already exists in the file at "
-                            f"{current_result.find(team_member.name)} "
-                            f"({team_boundary}) but is not in the proper section, it should"
-                            f"be '{team_name}', please fix manually. Did you consider uniformizing the name ? :\n")
-                raise RuntimeError(
-                    team_member.get_template(base_message) + "}\n"
-
+                base_message = (
+                    f"'{team_member}' already exists in the file at "
+                    f"{current_result.find(team_member.name)} "
+                    f"({team_boundary}) but is not in the proper section, it should"
+                    f"be '{team_name}', please fix manually. Did you consider "
+                    "uniformizing the name ? :\n"
                 )
-            else:
+                raise RuntimeError(team_member.get_template(base_message) + "}\n")
+            elif team_member.mail:
                 new_team += line_for_person(team_member)
+            else:
+                logging.warning(
+                    "'%s' was not treated as there's no email.", team_member
+                )
         new_teams.append(new_team)
     return "".join(new_teams)
 

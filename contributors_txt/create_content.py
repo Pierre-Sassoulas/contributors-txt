@@ -1,4 +1,5 @@
 import json
+import logging
 import subprocess
 import warnings
 from pathlib import Path
@@ -77,20 +78,26 @@ class Person(NamedTuple):
             self.team,
         )
 
-    def get_template(self, template:str, other: Optional["Person"]=None):
+    def get_template(self, template: str, other: Optional["Person"] = None):
         template += f'"{self.mail}": '
         template += "{"
-        mail = self.mail[2:-2] if self.mail is not None else ""
+        mail = self.mail[1:-1] if self.mail is not None else ""
         if other:
             other_mail = other.mail[1:-1] if other.mail is not None else ""
-            return template + f"""
+            return (
+                template
+                + f"""
             "mails": ["{mail}","{other_mail}"],
             "name": "{self.name}"
 """
-        return     template +         f"""
+            )
+        return (
+            template
+            + f"""
             "mails": ["{mail}"],
             "name": "{self.name}"
 """
+        )
 
     def __repr__(self) -> str:
         return f"{self.name=} {self.mail=} {self.number_of_commits=} {self.team=}"
@@ -133,7 +140,7 @@ def persons_from_shortlog(
 def add_contributors(persons):
     result = get_team_header(DEFAULT_TEAM_ROLE)
     for person in sorted(persons.values(), reverse=True):
-        if person.team != DEFAULT_TEAM_ROLE:
+        if person.team != DEFAULT_TEAM_ROLE or person.mail is None:
             continue
         if not person_should_be_shown(person):
             continue
@@ -142,6 +149,7 @@ def add_contributors(persons):
 
 
 def line_for_person(person: Person) -> str:
+    assert person.mail, f"{person} do not have mail"
     return f"- {person}\n"
 
 
@@ -156,6 +164,9 @@ def add_teams(persons):
         for team_name, team_members in teams.items():
             result += get_team_header(team_name)
             for team_member in team_members:
+                if not team_member.mail:
+                    logging.warning("%s do not have a proper email", team_member)
+                    continue
                 result += line_for_person(team_member)
             result += "\n\n"
     return result
