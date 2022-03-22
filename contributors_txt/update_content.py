@@ -145,6 +145,7 @@ def add_email_if_missing(current_result, teams):
                 continue
             if team_member.name in current_result[begin:end]:
                 if team_member.mail and team_member.mail in current_result[begin:end]:
+                    check_for_duplication(current_result, team_member)
                     continue
                 if team_member.mail:
                     if team_member.name.find(" ") != -1:
@@ -178,6 +179,20 @@ def add_email_if_missing(current_result, teams):
                 )
         new_teams.append(new_team)
     return "".join(new_teams)
+
+
+def check_for_duplication(current_result: str, team_member: Person) -> None:
+    assert team_member.mail
+    if current_result.count(team_member.mail) != 1:
+        raise RuntimeError(f"{team_member} is duplicated")
+    if (
+        current_result.count(team_member.name) != 1
+        and team_member.name not in team_member.mail
+    ):
+        logging.info(
+            "It's possible that %s is duplicated, please check by yourself",
+            team_member,
+        )
 
 
 def get_team_boundary(
