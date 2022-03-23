@@ -185,10 +185,9 @@ def check_for_duplication(current_result: str, team_member: Person) -> None:
     assert team_member.mail
     if current_result.count(team_member.mail) != 1:
         raise RuntimeError(f"{team_member} is duplicated")
-    if (
-        current_result.count(team_member.name) != 1
-        and team_member.name not in team_member.mail
-    ):
+    name_count = current_result.count(team_member.name)
+    name_in_email = team_member.name in team_member.mail
+    if (name_count > 1 and not name_in_email) or (name_count > 2 and name_in_email):
         logging.info(
             "It's possible that %s is duplicated, please check by yourself",
             team_member,
