@@ -1,6 +1,7 @@
 import json
 import logging
 import subprocess
+import sys
 import warnings
 from pathlib import Path
 from typing import Dict, List, NamedTuple, Optional, Union
@@ -100,7 +101,9 @@ class Person(NamedTuple):
         )
 
     def __repr__(self) -> str:
-        return f"{self.name=} {self.mail=} {self.number_of_commits=} {self.team=}"
+        if sys.version_info > (3, 7):
+            return f"{self.name=} {self.mail=} {self.number_of_commits=} {self.team=}"
+        return f"{self.name} {self.mail} {self.number_of_commits} {self.team}"
 
     def __str__(self) -> str:
         return f"{self.name} {self.mail}" if self.mail else f"{self.name}"
