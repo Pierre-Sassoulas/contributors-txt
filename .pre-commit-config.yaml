@@ -22,7 +22,7 @@ repos:
     hooks:
       - id: pyupgrade
         exclude: tests/testdata
-        args: [--py38-plus]
+        args: [--py36-plus]
   - repo: https://github.com/PyCQA/isort
     rev: 5.10.1
     hooks:

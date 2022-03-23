@@ -100,7 +100,11 @@ class Person(NamedTuple):
         )
 
     def __repr__(self) -> str:
-        return f"{self.name=} {self.mail=} {self.number_of_commits=} {self.team=}"
+        # return f"{self.name=} {self.mail=} {self.number_of_commits=} {self.team=}"
+        return (
+            f"name={self.name} mail={self.mail} "
+            f"number_of_commits={self.number_of_commits} team={self.team}"
+        )
 
     def __str__(self) -> str:
         return f"{self.name} {self.mail}" if self.mail else f"{self.name}"
