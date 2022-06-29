@@ -26,8 +26,9 @@ from contributors_txt.create_content import create_content
             """
     42  Pierre Sassoulas <pierre.sassoulas@gmail.com>
      2  dependabot[bot] <49699333+dependabot[bot]@users.noreply.github.com>
-""",             "- Pierre Sassoulas <pierre.sassoulas@gmail.com>",
-        ]
+""",
+            "- Pierre Sassoulas <pierre.sassoulas@gmail.com>",
+        ],
     ],
 )
 def test_basic(shortlog_output: str, expected: str, caplog):
