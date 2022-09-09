@@ -28,7 +28,9 @@ def normalize_configuration(
         json.dump(content, f, indent=4, sort_keys=True, ensure_ascii=False)
 
 
-def get_new_aliases(aliases: List[Alias]) -> Dict[str, Dict[str, Union[List[str], str]]]:
+def get_new_aliases(
+    aliases: List[Alias],
+) -> Dict[str, Dict[str, Union[List[str], str]]]:
     result = {}
     for alias in aliases:
         updated_alias = {

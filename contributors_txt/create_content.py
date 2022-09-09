@@ -183,7 +183,9 @@ def get_team_header(team_name: str) -> str:
 """
 
 
-def get_teams(persons: Dict[str, Person], exclude_standard: bool=True) -> Dict[str, List[Person]]:
+def get_teams(
+    persons: Dict[str, Person], exclude_standard: bool = True
+) -> Dict[str, List[Person]]:
     teams: Dict[str, List[Person]] = {}
     for person in sorted(persons.values(), reverse=True):
         if person.team != DEFAULT_TEAM_ROLE or not exclude_standard:

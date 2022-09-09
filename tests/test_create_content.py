@@ -1,12 +1,12 @@
 import logging
 
 import pytest
-from pytest import  LogCaptureFixture
+from pytest import LogCaptureFixture
 
 from contributors_txt.create_content import create_content
 
 
-@pytest.mark.parametrize( # type: ignore[misc]
+@pytest.mark.parametrize(  # type: ignore[misc]
     "shortlog_output,expected",
     [
         [
