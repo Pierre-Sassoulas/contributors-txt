@@ -42,7 +42,7 @@ def update_content(
     return result
 
 
-def update_teams(current_result: str, persons: Dict[str, Person]):
+def update_teams(current_result: str, persons: Dict[str, Person]) -> str:
     teams = get_teams(persons, exclude_standard=False)
     if not teams:
         return current_result
@@ -60,7 +60,7 @@ def check_no_email(current_result: str) -> None:
             logging.warning("There's no email in %s", part)
 
 
-def order_by_commit(current_result, teams) -> str:
+def order_by_commit(current_result: str, teams: Dict[str, List[Person]]) -> str:
     new_teams: List[str] = []
     team_boundary = get_team_boundary(current_result, list(teams.keys()))
     for team_name, team_members in teams.items():
@@ -73,7 +73,7 @@ def order_by_commit(current_result, teams) -> str:
 
 
 def order_by_commit_in_team(
-    current_result, team_boundary, team_members, team_name
+    current_result: str, team_boundary: Dict[str, Tuple[int, int]], team_members: List[Person], team_name: str
 ) -> str:
     # pylint: disable=too-many-locals
     logging.debug("Updating team %s", team_name)
@@ -123,14 +123,14 @@ def order_by_commit_in_team(
     return "\n-".join(new_team)
 
 
-def add_person(consumed, existing_person, i, new_team, person_found):
+def add_person(consumed: List[int], existing_person: List[str], i: int, new_team: List[str], person_found: bool) -> bool:
     new_team.append(existing_person)
     person_found = True
     consumed.append(i)
     return person_found
 
 
-def add_email_if_missing(current_result, teams):
+def add_email_if_missing(current_result: str, teams: Dict[str, List[Person]]) -> str:
     new_teams: List[str] = []
     team_boundary = get_team_boundary(current_result, list(teams.keys()))
     being_header, end_header = team_boundary["Header"]

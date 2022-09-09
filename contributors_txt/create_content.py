@@ -20,7 +20,7 @@ class Alias(NamedTuple):
     team: str
 
 
-def get_aliases(aliases_file: Union[Path, str, None], normalize=False) -> List[Alias]:
+def get_aliases(aliases_file: Union[Path, str, None], normalize: bool=False) -> List[Alias]:
     aliases: List[Alias] = []
     if aliases_file is None:
         return aliases
@@ -78,7 +78,7 @@ class Person(NamedTuple):
             self.team,
         )
 
-    def get_template(self, template: str, other: Optional["Person"] = None):
+    def get_template(self, template: str, other: Optional["Person"] = None) -> str:
         template += f'"{self.mail}": '
         template += "{"
         mail = self.mail[1:-1] if self.mail is not None else ""
