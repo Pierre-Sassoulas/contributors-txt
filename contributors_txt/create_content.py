@@ -20,7 +20,9 @@ class Alias(NamedTuple):
     team: str
 
 
-def get_aliases(aliases_file: Union[Path, str, None], normalize: bool=False) -> List[Alias]:
+def get_aliases(
+    aliases_file: Union[Path, str, None], normalize: bool = False
+) -> List[Alias]:
     aliases: List[Alias] = []
     if aliases_file is None:
         return aliases

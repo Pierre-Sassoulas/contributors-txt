@@ -1,7 +1,7 @@
 import json
 import logging
 from pathlib import Path
-from typing import Dict, List, Optional, Union, Sequence
+from typing import Dict, List, Optional, Sequence, Union
 
 from contributors_txt.__main__ import parse_args, set_logging
 from contributors_txt.const import DEFAULT_TEAM_ROLE

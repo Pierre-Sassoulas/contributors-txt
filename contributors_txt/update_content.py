@@ -73,7 +73,10 @@ def order_by_commit(current_result: str, teams: Dict[str, List[Person]]) -> str:
 
 
 def order_by_commit_in_team(
-    current_result: str, team_boundary: Dict[str, Tuple[int, int]], team_members: List[Person], team_name: str
+    current_result: str,
+    team_boundary: Dict[str, Tuple[int, int]],
+    team_members: List[Person],
+    team_name: str,
 ) -> str:
     # pylint: disable=too-many-locals
     logging.debug("Updating team %s", team_name)
@@ -123,7 +126,13 @@ def order_by_commit_in_team(
     return "\n-".join(new_team)
 
 
-def add_person(consumed: List[int], existing_person: List[str], i: int, new_team: List[str], person_found: bool) -> bool:
+def add_person(
+    consumed: List[int],
+    existing_person: List[str],
+    i: int,
+    new_team: List[str],
+    person_found: bool,
+) -> bool:
     new_team.append(existing_person)
     person_found = True
     consumed.append(i)

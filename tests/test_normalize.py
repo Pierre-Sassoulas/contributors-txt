@@ -1,5 +1,6 @@
 import logging
 from pathlib import Path
+
 import pytest
 
 from contributors_txt.normalize import main
@@ -16,7 +17,9 @@ EXPECTED = """{
 }"""
 
 
-def test_basic(tmp_path: Path, caplog: pytest.LogCaptureFixture, recwarn: pytest.WarningsRecorder) -> None:
+def test_basic(
+    tmp_path: Path, caplog: pytest.LogCaptureFixture, recwarn: pytest.WarningsRecorder
+) -> None:
     caplog.set_level(logging.DEBUG)
     output = tmp_path / ".contributors_aliases.json"
     main(["-v", "-a", str(contributors_aliases), "-o", str(output)])
