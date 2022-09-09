@@ -128,7 +128,7 @@ def order_by_commit_in_team(
 
 def add_person(
     consumed: List[int],
-    existing_person: List[str],
+    existing_person: str,
     i: int,
     new_team: List[str],
     person_found: bool,
@@ -144,7 +144,7 @@ def add_email_if_missing(current_result: str, teams: Dict[str, List[Person]]) ->
     team_boundary = get_team_boundary(current_result, list(teams.keys()))
     being_header, end_header = team_boundary["Header"]
     new_teams.append(current_result[being_header:end_header])
-    for team_name in sorted(teams, key=team_boundary.get):
+    for team_name in sorted(teams, key=team_boundary.get): # type: ignore[arg-type]
         team_members = teams[team_name]
         logging.debug("Updating team %s", team_name)
         begin, end = team_boundary[team_name]
