@@ -1,7 +1,7 @@
 import json
 import logging
 from pathlib import Path
-from typing import Dict, List, Optional, Union
+from typing import Dict, List, Optional, Sequence, Union
 
 from contributors_txt.__main__ import parse_args, set_logging
 from contributors_txt.const import DEFAULT_TEAM_ROLE
@@ -28,7 +28,9 @@ def normalize_configuration(
         json.dump(content, f, indent=4, sort_keys=True, ensure_ascii=False)
 
 
-def get_new_aliases(aliases: List[Alias]) -> Dict:
+def get_new_aliases(
+    aliases: List[Alias],
+) -> Dict[Optional[str], Dict[str, Union[Sequence[str], str]]]:
     result = {}
     for alias in aliases:
         updated_alias = {

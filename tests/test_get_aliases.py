@@ -1,12 +1,14 @@
 from pathlib import Path
 
+import pytest
+
 from contributors_txt.const import DEFAULT_TEAM_ROLE
 from contributors_txt.create_content import Alias, get_aliases
 
 aliases_file = Path(__file__).parent / ".contributors_aliases.json"
 
 
-def test_basic(recwarn) -> None:
+def test_basic(recwarn: pytest.WarningsRecorder) -> None:
     aliases = get_aliases(aliases_file)
     assert aliases == [
         Alias(
