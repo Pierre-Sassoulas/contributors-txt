@@ -66,7 +66,10 @@ class Person(NamedTuple):
 
     def __add__(self, other: "Person") -> "Person":  # type: ignore[override]
         assert self.name == other.name, f"{self.name} != {other.name}"
-        template = f"Mails are not the same: {self.mail} != {other.mail} for {self} vs {other}:\n"
+        template = (
+            f"Mails are not the same: {self.mail} != {other.mail} "
+            f"for {self} vs {other}:\n"
+        )
         template = self.get_template(template, other)
         if self.team != DEFAULT_TEAM_ROLE:
             template += f',\n"team": "{self.team}"'
@@ -86,20 +89,14 @@ class Person(NamedTuple):
         mail = self.mail[1:-1] if self.mail is not None else ""
         if other:
             other_mail = other.mail[1:-1] if other.mail is not None else ""
-            return (
-                template
-                + f"""
+            return f"""{template}
             "mails": ["{mail}","{other_mail}"],
             "name": "{self.name}"
 """
-            )
-        return (
-            template
-            + f"""
+        return f"""{template}
             "mails": ["{mail}"],
             "name": "{self.name}"
 """
-        )
 
     def __repr__(self) -> str:
         # return f"{self.name=} {self.mail=} {self.number_of_commits=} {self.team=}"
