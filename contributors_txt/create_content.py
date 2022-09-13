@@ -66,7 +66,10 @@ class Person(NamedTuple):
 
     def __add__(self, other: "Person") -> "Person":  # type: ignore[override]
         assert self.name == other.name, f"{self.name} != {other.name}"
-        template = f"Mails are not the same: {self.mail} != {other.mail} for {self} vs {other}:\n"
+        template = (
+            f"Mails are not the same: {self.mail} != {other.mail} "
+            f"for {self} vs {other}:\n"
+        )
         template = self.get_template(template, other)
         if self.team != DEFAULT_TEAM_ROLE:
             template += f',\n"team": "{self.team}"'
