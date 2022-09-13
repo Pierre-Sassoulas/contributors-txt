@@ -89,20 +89,14 @@ class Person(NamedTuple):
         mail = self.mail[1:-1] if self.mail is not None else ""
         if other:
             other_mail = other.mail[1:-1] if other.mail is not None else ""
-            return (
-                template
-                + f"""
+            return f"""{template}
             "mails": ["{mail}","{other_mail}"],
             "name": "{self.name}"
 """
-            )
-        return (
-            template
-            + f"""
+        return f"""{template}
             "mails": ["{mail}"],
             "name": "{self.name}"
 """
-        )
 
     def __repr__(self) -> str:
         # return f"{self.name=} {self.mail=} {self.number_of_commits=} {self.team=}"
