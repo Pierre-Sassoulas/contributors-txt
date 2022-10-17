@@ -8,7 +8,7 @@ repos:
       - id: trailing-whitespace
       - id: end-of-file-fixer
   - repo: https://github.com/PyCQA/autoflake
-    rev: v1.6.0
+    rev: v1.7.6
     hooks:
       - id: autoflake
         args:
@@ -18,7 +18,7 @@ repos:
           - --remove-duplicate-keys
           - --remove-unused-variables
   - repo: https://github.com/asottile/pyupgrade
-    rev: v2.38.0
+    rev: v3.1.0
     hooks:
       - id: pyupgrade
         exclude: tests/testdata
@@ -33,7 +33,7 @@ repos:
     hooks:
       - id: black-disable-checker
   - repo: https://github.com/psf/black
-    rev: 22.8.0
+    rev: 22.10.0
     hooks:
       - id: black
         args: [--safe, --quiet]
@@ -51,7 +51,7 @@ repos:
         types: [python]
         args: ["-rn", "-sn"]
   - repo: https://github.com/pre-commit/mirrors-mypy
-    rev: v0.971
+    rev: v0.982
     hooks:
       - id: mypy
         name: mypy
@@ -69,7 +69,7 @@ repos:
             "types-typed-ast",
           ]
   - repo: https://github.com/pre-commit/mirrors-prettier
-    rev: v3.0.0-alpha.0
+    rev: v3.0.0-alpha.2
     hooks:
       - id: prettier
         args: [--prose-wrap=always, --print-width=88]
