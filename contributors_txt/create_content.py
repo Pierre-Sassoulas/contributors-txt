@@ -113,7 +113,7 @@ class Person(NamedTuple):
         if self.mail:
             result += f" {self.mail}"
         if self.comment:
-            result += f" {self.comment}"
+            result += f"{self.comment}"
         return result
 
 

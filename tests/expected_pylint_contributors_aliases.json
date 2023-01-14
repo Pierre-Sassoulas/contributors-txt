@@ -13,7 +13,7 @@
     "name": "Victor Jiajunsu"
   },
   "17108752+mattlbeck@users.noreply.github.com": {
-    "comment": "(mattlbeck)",
+    "comment": " (mattlbeck)",
     "mails": ["17108752+mattlbeck@users.noreply.github.com"],
     "name": "Matthew Beckers"
   },
@@ -36,7 +36,7 @@
     "team": "Maintainers"
   },
   "31987769+sushobhit27@users.noreply.github.com": {
-    "comment": "(sushobhit27)\n  * Added new check 'comparison-with-itself'.\n  * Added new check 'useless-import-alias'.\n  * Added support of annotations in missing-type-doc and missing-return-type-doc.\n  * Added new check 'comparison-with-callable'.\n  * Removed six package dependency.\n  * Added new check 'chained-comparison'.\n  * Added new check 'useless-object-inheritance'.",
+    "comment": " (sushobhit27)\n  * Added new check 'comparison-with-itself'.\n  * Added new check 'useless-import-alias'.\n  * Added support of annotations in missing-type-doc and missing-return-type-doc.\n  * Added new check 'comparison-with-callable'.\n  * Removed six package dependency.\n  * Added new check 'chained-comparison'.\n  * Added new check 'useless-object-inheritance'.",
     "mails": [
       "sushobhitsolanki@gmail.com",
       "31987769+sushobhit27@users.noreply.github.com"
@@ -99,7 +99,7 @@
     "name": "Tanvi Moharir"
   },
   "80432516+jpy-git@users.noreply.github.com": {
-    "comment": "(jpy-git)",
+    "comment": " (jpy-git)",
     "mails": ["80432516+jpy-git@users.noreply.github.com"],
     "name": "Joseph Young"
   },
@@ -108,7 +108,7 @@
     "name": "Sam Vermeiren"
   },
   "95424144+allanc65@users.noreply.github.com": {
-    "comment": "(allanc65)\n  * Fixed issue 5452, false positive missing-param-doc for multi-line Google-style params",
+    "comment": " (allanc65)\n  * Fixed issue 5452, false positive missing-param-doc for multi-line Google-style params",
     "mails": ["95424144+allanc65@users.noreply.github.com"],
     "name": "Allan Chandler"
   },
@@ -121,7 +121,7 @@
     "name": "Konstantin"
   },
   "Humetsky@gmail.com": {
-    "comment": "(mhumetskyi)\n  * Fixed ignored empty functions by similarities checker with \"ignore-signatures\" option enabled\n  * Ignore function decorators signatures as well by similarities checker with \"ignore-signatures\" option enabled\n  * Ignore class methods and nested functions signatures as well by similarities checker with \"ignore-signatures\" option enabled",
+    "comment": " (mhumetskyi)\n  * Fixed ignored empty functions by similarities checker with \"ignore-signatures\" option enabled\n  * Ignore function decorators signatures as well by similarities checker with \"ignore-signatures\" option enabled\n  * Ignore class methods and nested functions signatures as well by similarities checker with \"ignore-signatures\" option enabled",
     "mails": ["Humetsky@gmail.com"],
     "name": "Maksym Humetskyi"
   },
@@ -145,12 +145,12 @@
     "name": "Paul Renvoisé"
   },
   "adityagupta1089@users.noreply.github.com": {
-    "comment": "(adityagupta1089)\n  * Added ignore_signatures to duplicate checker",
+    "comment": " (adityagupta1089)\n  * Added ignore_signatures to duplicate checker",
     "mails": ["adityagupta1089@users.noreply.github.com"],
     "name": "Aditya Gupta"
   },
   "afoglia@users.noreply.github.com": {
-    "comment": "(Google): Added simple string slots check.",
+    "comment": " (Google): Added simple string slots check.",
     "mails": ["afoglia@users.noreply.github.com"],
     "name": "Anthony Foglia"
   },
@@ -160,7 +160,7 @@
     "name": "Ahirnish Pareek"
   },
   "alexandre.fayolle@logilab.fr": {
-    "comment": "(Logilab): TkInter gui, documentation, debian support",
+    "comment": " (Logilab): TkInter gui, documentation, debian support",
     "mails": ["alexandre.fayolle@logilab.fr", "afayolle.ml@free.fr"],
     "name": "Alexandre Fayolle"
   },
@@ -223,7 +223,7 @@
     "name": "Mihai Balint"
   },
   "balparda@google.com": {
-    "comment": "(Google): GPyLint maintainer (Google's pylint variant)",
+    "comment": " (Google): GPyLint maintainer (Google's pylint variant)",
     "mails": ["balparda@google.com"],
     "name": "Daniel Balparda"
   },
@@ -233,7 +233,7 @@
     "name": "Yuri Bochkarev"
   },
   "bastien.vallet@gmail.com": {
-    "comment": "(Djailla)",
+    "comment": " (Djailla)",
     "mails": ["bastien.vallet@gmail.com"],
     "name": "Bastien Vallet"
   },
@@ -298,7 +298,7 @@
     "name": "Carey Metcalfe"
   },
   "carli.freudenberg@energymeteo.de": {
-    "comment": "(CarliJoy)\n  * Fixed issue 5281, added Unicode checker\n  * Improve non-ascii-name checker",
+    "comment": " (CarliJoy)\n  * Fixed issue 5281, added Unicode checker\n  * Improve non-ascii-name checker",
     "mails": ["carli.freudenberg@energymeteo.de"],
     "name": "Carli Freudenberg"
   },
@@ -327,7 +327,7 @@
     "name": "Ionel Maries Cristian"
   },
   "dan.r.neal@gmail.com": {
-    "comment": "(danrneal)",
+    "comment": " (danrneal)",
     "mails": ["dan.r.neal@gmail.com"],
     "name": "Daniel R. Neal"
   },
@@ -340,12 +340,12 @@
     "name": "David Pursehouse"
   },
   "david@cs.toronto.edu": {
-    "comment": "(david-yz-liu)",
+    "comment": " (david-yz-liu)",
     "mails": ["david@cs.toronto.edu"],
     "name": "David Liu"
   },
   "ddandd@gmail.com": {
-    "comment": "(doranid)",
+    "comment": " (doranid)",
     "mails": ["ddandd@gmail.com"],
     "name": "Daniel Dorani"
   },
@@ -383,7 +383,7 @@
     "name": "David Shea"
   },
   "ejfine@gmail.com": {
-    "comment": "(eli88fine): Fixed false positive duplicate code warning for lines with symbols only",
+    "comment": " (eli88fine): Fixed false positive duplicate code warning for lines with symbols only",
     "mails": [
       "ubuntu@ip-172-31-89-59.ec2.internal",
       "eli88fine@gmail.com",
@@ -401,7 +401,7 @@
     "name": "Holger Peters"
   },
   "emile.anclin@logilab.fr": {
-    "comment": "(Logilab): python 3 support",
+    "comment": " (Logilab): python 3 support",
     "mails": ["emile.anclin@logilab.fr", ""],
     "name": "Emile Anclin"
   },
@@ -414,12 +414,12 @@
     "name": "Ethan Leba"
   },
   "fantix@uchicago.edu": {
-    "comment": "(UChicago)",
+    "comment": " (UChicago)",
     "mails": ["fantix@uchicago.edu"],
     "name": "Fantix King"
   },
   "flying-sheep@web.de": {
-    "comment": "(pylbrecht)",
+    "comment": " (pylbrecht)",
     "mails": ["flying-sheep@web.de", "palbrecht@mailbox.org"],
     "name": "Philipp Albrecht"
   },
@@ -428,7 +428,7 @@
     "name": "Marco Forte"
   },
   "frank@doublethefish.com": {
-    "comment": "(doublethefish)",
+    "comment": " (doublethefish)",
     "mails": ["frank@doublethefish.com", "doublethefish@gmail.com"],
     "name": "Frank Harrison"
   },
@@ -446,7 +446,7 @@
     "name": "Gabriel R. Sezefredo"
   },
   "gagern@google.com": {
-    "comment": "(Google): Added 'raising-format-tuple' warning.",
+    "comment": " (Google): Added 'raising-format-tuple' warning.",
     "mails": ["gagern@google.com"],
     "name": "Martin von Gagern"
   },
@@ -533,7 +533,7 @@
     "team": "Maintainers"
   },
   "jaehoonhwang@users.noreply.github.com": {
-    "comment": "(jaehoonhwang)",
+    "comment": " (jaehoonhwang)",
     "mails": ["jaehoonhwang@users.noreply.github.com"],
     "name": "Jaehoon Hwang"
   },
@@ -564,7 +564,7 @@
     "name": "jpkotta"
   },
   "julien.cristau@logilab.fr": {
-    "comment": "(Logilab): python 3 support",
+    "comment": " (Logilab): python 3 support",
     "mails": ["julien.cristau@logilab.fr"],
     "name": "Julien Cristau"
   },
@@ -589,7 +589,7 @@
     "name": "laike9m"
   },
   "laura.medioni@logilab.fr": {
-    "comment": "(Logilab, on behalf of the CNES):\n  * misplaced-comparison-constant\n  * no-classmethod-decorator\n  * no-staticmethod-decorator\n  * too-many-nested-blocks,\n  * too-many-boolean-expressions\n  * unneeded-not\n  * wrong-import-order\n  * ungrouped-imports,\n  * wrong-import-position\n  * redefined-variable-type",
+    "comment": " (Logilab, on behalf of the CNES):\n  * misplaced-comparison-constant\n  * no-classmethod-decorator\n  * no-staticmethod-decorator\n  * too-many-nested-blocks,\n  * too-many-boolean-expressions\n  * unneeded-not\n  * wrong-import-order\n  * ungrouped-imports,\n  * wrong-import-position\n  * redefined-variable-type",
     "mails": ["laura.medioni@logilab.fr", "lmedioni@logilab.fr"],
     "name": "Laura Médioni"
   },
@@ -599,12 +599,12 @@
     "name": "Roberto Leinardi"
   },
   "lescobar@vauxoo.com": {
-    "comment": "(Vauxoo): Add bad-docstring-quotes and docstring-first-line-empty",
+    "comment": " (Vauxoo): Add bad-docstring-quotes and docstring-first-line-empty",
     "mails": ["lescobar@vauxoo.com"],
     "name": "Luis Escobar"
   },
   "liyt@ios.ac.cn": {
-    "comment": "(yetingli)",
+    "comment": " (yetingli)",
     "mails": ["liyt@ios.ac.cn"],
     "name": "Yeting Li"
   },
@@ -613,7 +613,7 @@
     "name": "Boris Feld"
   },
   "lucristofolini@gmail.com": {
-    "comment": "(luigibertaco)",
+    "comment": " (luigibertaco)",
     "mails": ["luigi.cristofolini@q-ctrl.com", "lucristofolini@gmail.com"],
     "name": "Luigi Bertaco Cristofolini"
   },
@@ -648,7 +648,7 @@
     "team": "Maintainers"
   },
   "mbp@google.com": {
-    "comment": "(Google):\n  * warnings for anomalous backslashes\n  * symbolic names for messages (like 'unused')\n  * etc.",
+    "comment": " (Google):\n  * warnings for anomalous backslashes\n  * symbolic names for messages (like 'unused')\n  * etc.",
     "mails": ["mbp@google.com"],
     "name": "Martin Pool"
   },
@@ -666,7 +666,7 @@
     "team": "Maintainers"
   },
   "miketheman@gmail.com": {
-    "comment": "(miketheman)",
+    "comment": " (miketheman)",
     "mails": ["miketheman@gmail.com"],
     "name": "Mike Fiedler"
   },
@@ -681,7 +681,7 @@
     "name": "Erik Eriksson"
   },
   "moylop260@vauxoo.com": {
-    "comment": "(Vauxoo):\n  * Support for deprecated-modules in modules not installed,\n  * Refactor wrong-import-order to integrate it with `isort` library\n  * Add check too-complex with mccabe for cyclomatic complexity\n  * Refactor wrong-import-position to skip try-import and nested cases\n  * Add consider-merging-isinstance, superfluous-else-return\n  * Fix consider-using-ternary for 'True and True and True or True' case\n  * Add bad-docstring-quotes and docstring-first-line-empty\n  * Add missing-timeout",
+    "comment": " (Vauxoo):\n  * Support for deprecated-modules in modules not installed,\n  * Refactor wrong-import-order to integrate it with `isort` library\n  * Add check too-complex with mccabe for cyclomatic complexity\n  * Refactor wrong-import-position to skip try-import and nested cases\n  * Add consider-merging-isinstance, superfluous-else-return\n  * Fix consider-using-ternary for 'True and True and True or True' case\n  * Add bad-docstring-quotes and docstring-first-line-empty\n  * Add missing-timeout",
     "mails": ["moylop260@vauxoo.com"],
     "name": "Moisés López"
   },
@@ -696,7 +696,7 @@
     "name": "Mark Roman Miller"
   },
   "naslundx@gmail.com": {
-    "comment": "(naslundx)",
+    "comment": " (naslundx)",
     "mails": ["naslundx@gmail.com"],
     "name": "Marcus Näslund"
   },
@@ -706,7 +706,7 @@
     "name": "Nathaniel Manista"
   },
   "nelfin@gmail.com": {
-    "comment": "(nelfin)",
+    "comment": " (nelfin)",
     "mails": ["nelfin@gmail.com", "hello@nelf.in"],
     "name": "Andrew Haigh"
   },
@@ -733,12 +733,12 @@
     "team": "Ex-maintainers"
   },
   "pedro@algarvio.me": {
-    "comment": "(s0undt3ch)",
+    "comment": " (s0undt3ch)",
     "mails": ["pedro@algarvio.me"],
     "name": "Pedro Algarvio"
   },
   "peter.kolbus@gmail.com": {
-    "comment": "(Garmin)",
+    "comment": " (Garmin)",
     "mails": ["peter.kolbus@gmail.com", "peter.kolbus@garmin.com"],
     "name": "Peter Kolbus"
   },
@@ -766,12 +766,12 @@
     "name": "Radu Ciorba"
   },
   "ram@rachum.com": {
-    "comment": "(cool-RR)",
+    "comment": " (cool-RR)",
     "mails": ["ram@rachum.com"],
     "name": "Ram Rachum"
   },
   "ramiroleal050@gmail.com": {
-    "comment": "(ramiro050): Fixed bug preventing pylint from working with Emacs tramp",
+    "comment": " (ramiro050): Fixed bug preventing pylint from working with Emacs tramp",
     "mails": ["ramiroleal050@gmail.com"],
     "name": "Ramiro Leal-Cavazos"
   },
@@ -780,7 +780,7 @@
     "name": "Raphael Gaschignard"
   },
   "rbt@sent.as": {
-    "comment": "(9999years)",
+    "comment": " (9999years)",
     "mails": ["rbt@sent.as"],
     "name": "Rebecca Turner"
   },
@@ -798,13 +798,13 @@
     "team": "Maintainers"
   },
   "roy.williams.iii@gmail.com": {
-    "comment": "(Lyft)\n  * added check for implementing __eq__ without implementing __hash__,\n  * Added Python 3 check for accessing Exception.message.\n  * Added Python 3 check for calling encode/decode with invalid codecs.\n  * Added Python 3 check for accessing sys.maxint.\n  * Added Python 3 check for bad import statements.\n  * Added Python 3 check for accessing deprecated methods on the 'string' module,\n    various patches.",
+    "comment": " (Lyft)\n  * added check for implementing __eq__ without implementing __hash__,\n  * Added Python 3 check for accessing Exception.message.\n  * Added Python 3 check for calling encode/decode with invalid codecs.\n  * Added Python 3 check for accessing sys.maxint.\n  * Added Python 3 check for bad import statements.\n  * Added Python 3 check for accessing deprecated methods on the 'string' module,\n    various patches.",
     "mails": ["roy.williams.iii@gmail.com", "rwilliams@lyft.com"],
     "name": "Roy Williams",
     "team": "Maintainers"
   },
   "rr-@sakuya.pl": {
-    "comment": "(rr-)",
+    "comment": " (rr-)",
     "mails": ["rr-@sakuya.pl"],
     "name": "Marcin Kurczewski"
   },
@@ -822,7 +822,7 @@
     "name": "Kosarchuk Sergey"
   },
   "sfreilich@google.com": {
-    "comment": "(sfreilich)",
+    "comment": " (sfreilich)",
     "mails": ["sfreilich@google.com"],
     "name": "Samuel Freilich"
   },
@@ -863,7 +863,7 @@
     "name": "Trevor Bekolay"
   },
   "thenault@gmail.com": {
-    "comment": ": main author / maintainer",
+    "comment": " : main author / maintainer",
     "mails": ["thenault@gmail.com", "sylvain.thenault@logilab.fr"],
     "name": "Sylvain Thénault",
     "team": "Ex-maintainers"
@@ -874,7 +874,7 @@
     "name": "Tomer Chachamu"
   },
   "tushar.sadhwani000@gmail.com": {
-    "comment": "(tusharsadhwani)",
+    "comment": " (tusharsadhwani)",
     "mails": [
       "tushar.sadhwani000@gmail.com",
       "tushar@deepsource.io",
@@ -901,7 +901,7 @@
     "name": "Vlad Temian"
   },
   "westurner@google.com": {
-    "comment": "(Google): added new check 'inconsistent-quotes'",
+    "comment": " (Google): added new check 'inconsistent-quotes'",
     "mails": ["westurner@google.com"],
     "name": "Wes Turner"
   },
