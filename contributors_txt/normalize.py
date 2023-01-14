@@ -1,14 +1,15 @@
 import json
 import logging
+from collections.abc import Sequence
 from pathlib import Path
-from typing import Dict, List, Optional, Sequence, Union
+from typing import Optional, Union
 
 from contributors_txt.__main__ import parse_args, set_logging
 from contributors_txt.const import DEFAULT_TEAM_ROLE
 from contributors_txt.create_content import Alias, get_aliases
 
 
-def main(args: Optional[List[str]] = None) -> None:
+def main(args: Optional[list[str]] = None) -> None:
     parsed_args = parse_args(args)
     if parsed_args.output is None:
         parsed_args.output = parsed_args.aliases
@@ -26,15 +27,15 @@ def normalize_configuration(
     dump_normalized_aliases(aliases, output)
 
 
-def dump_normalized_aliases(aliases: List[Alias], output: Union[Path, str]) -> None:
+def dump_normalized_aliases(aliases: list[Alias], output: Union[Path, str]) -> None:
     content = get_new_aliases(aliases)
     with open(output, "w", encoding="utf8") as f:
         json.dump(content, f, indent=4, sort_keys=True, ensure_ascii=False)
 
 
 def get_new_aliases(
-    aliases: List[Alias],
-) -> Dict[Optional[str], Dict[str, Union[Sequence[str], str]]]:
+    aliases: list[Alias],
+) -> dict[Optional[str], dict[str, Union[Sequence[str], str]]]:
     result = {}
     for alias in aliases:
         updated_alias = {

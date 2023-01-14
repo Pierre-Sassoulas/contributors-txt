@@ -3,7 +3,7 @@ import json
 import logging
 import re
 from pathlib import Path
-from typing import Dict, List, Optional
+from typing import Optional
 
 from contributors_txt.__main__ import add_default_arguments, set_logging
 from contributors_txt.const import DEFAULT_CONTRIBUTOR_PATH, DEFAULT_TEAM_ROLE
@@ -15,7 +15,7 @@ THE_REGEX = re.compile(
 )
 
 
-def main(args: Optional[List[str]] = None) -> None:
+def main(args: Optional[list[str]] = None) -> None:
     parser = argparse.ArgumentParser(__doc__)
     add_default_arguments(parser)
     parser.add_argument(
@@ -81,7 +81,7 @@ def _get_new_alias(
     return old_alias
 
 
-def _get_input_to_parse(input_path: Path) -> List[dict[str, str]]:
+def _get_input_to_parse(input_path: Path) -> list[dict[str, str]]:
     with open(input_path, encoding="utf8") as f:
         inputs = f.read()
     results = []
@@ -95,12 +95,12 @@ def _get_input_to_parse(input_path: Path) -> List[dict[str, str]]:
     return results
 
 
-def _get_aliases(aliases_path: Path) -> Dict[str, Alias]:
+def _get_aliases(aliases_path: Path) -> dict[str, Alias]:
     with open(aliases_path, encoding="utf8") as f:
         aliases_raw = json.load(f)
-    aliases: Dict[str, Alias] = {}
+    aliases: dict[str, Alias] = {}
     for mail, info in aliases_raw.items():
-        mails: List[str] = info.get("mails")
+        mails: list[str] = info.get("mails")
         name: str = info.get("name")
         team: str = info.get("team", DEFAULT_TEAM_ROLE)
         aliases[mail] = Alias(
