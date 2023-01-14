@@ -25,17 +25,23 @@ def main(args: Optional[List[str]] = None) -> None:
 
 def parse_args(args: Optional[List[str]] = None) -> argparse.Namespace:
     parser = argparse.ArgumentParser(__doc__)
-    parser.add_argument(
-        "-a",
-        "--aliases",
-        default=None,
-        help="The path to the aliases file.",
-    )
+    add_default_arguments(parser)
     parser.add_argument(
         "-o",
         "--output",
         default=str(DEFAULT_CONTRIBUTOR_PATH),
         help="Where to output the contributor list",
+    )
+    parsed_args: argparse.Namespace = parser.parse_args(args)
+    return parsed_args
+
+
+def add_default_arguments(parser: argparse.ArgumentParser) -> None:
+    parser.add_argument(
+        "-a",
+        "--aliases",
+        default=None,
+        help="The path to the aliases file.",
     )
     parser.add_argument(
         "-v",
@@ -44,8 +50,6 @@ def parse_args(args: Optional[List[str]] = None) -> argparse.Namespace:
         default=False,
         help="Display logging messages",
     )
-    parsed_args: argparse.Namespace = parser.parse_args(args)
-    return parsed_args
 
 
 def set_logging(verbose: bool) -> None:
