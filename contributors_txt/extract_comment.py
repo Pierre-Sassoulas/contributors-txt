@@ -11,7 +11,7 @@ from contributors_txt.create_content import Alias
 from contributors_txt.normalize import dump_normalized_aliases
 
 THE_REGEX = re.compile(
-    r"(?P<name>[\w\-\. ()'\",]+)<(?P<mail>[\w\.@+\- ]+)>(?P<comment>.*)"
+    r"(?P<name>[\w\-\. ()'\",]+)<(?P<mail>[\w\.@+\- ]+)>(?P<comment>.*)", re.DOTALL
 )
 
 
@@ -91,7 +91,8 @@ def _get_input_to_parse(input_path: Path) -> List[dict[str, str]]:
         if match is None:
             logging.warning("Did not match the expected pattern in %s", input_)
         else:
-            results.append(match.groupdict())
+            result = match.groupdict()
+            results.append(result)
     return results
 
 
