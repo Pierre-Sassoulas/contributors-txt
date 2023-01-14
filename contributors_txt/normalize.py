@@ -26,7 +26,7 @@ def normalize_configuration(
     dump_normalized_aliases(aliases, output)
 
 
-def dump_normalized_aliases(aliases: List[Alias], output: Union[Path | str]) -> None:
+def dump_normalized_aliases(aliases: List[Alias], output: Union[Path, str]) -> None:
     content = get_new_aliases(aliases)
     with open(output, "w", encoding="utf8") as f:
         json.dump(content, f, indent=4, sort_keys=True, ensure_ascii=False)
