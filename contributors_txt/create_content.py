@@ -18,6 +18,7 @@ class Alias(NamedTuple):
     authoritative_mail: Optional[str]
     name: str
     team: str
+    comment: Optional[str] = None
 
 
 def get_aliases(
@@ -59,6 +60,7 @@ class Person(NamedTuple):
     name: str
     mail: Optional[str]
     team: str
+    comment: Optional[str]
 
     def __gt__(self, other: "Person") -> bool:  # type: ignore[override]
         """Permit sorting contributors by number of commits."""
@@ -81,6 +83,7 @@ class Person(NamedTuple):
             self.name,
             self.mail,
             self.team,
+            self.comment,
         )
 
     def get_template(self, template: str, other: Optional["Person"] = None) -> str:
@@ -106,7 +109,12 @@ class Person(NamedTuple):
         )
 
     def __str__(self) -> str:
-        return f"{self.name} {self.mail}" if self.mail else f"{self.name}"
+        result = f"{self.name}"
+        if self.mail:
+            result += f" {self.mail}"
+        if self.comment:
+            result += f" {self.comment}"
+        return result
 
 
 def create_content(
@@ -205,6 +213,7 @@ def _parse_person(unparsed_person: str, aliases: List[Alias]) -> Person:
     name = " ".join(names)
     mail: Optional[str] = splitted_person[-1][1:-1]
     team = DEFAULT_TEAM_ROLE
+    comment: Optional[str] = ""
     if mail == "none@none":
         mail = None
     for alias in aliases:
@@ -213,6 +222,9 @@ def _parse_person(unparsed_person: str, aliases: List[Alias]) -> Person:
             mail = alias.authoritative_mail
             name = alias.name
             team = alias.team
+            comment = alias.comment
             break
     # logging.debug("Person is aliased to %s %s %s", number_of_commit, name, mail)
-    return Person(int(number_of_commit), name, f"<{mail}>" if mail else None, team)
+    return Person(
+        int(number_of_commit), name, f"<{mail}>" if mail else None, team, comment
+    )

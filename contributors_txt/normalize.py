@@ -23,6 +23,10 @@ def normalize_configuration(
 ) -> None:
     aliases = get_aliases(aliases_file, normalize=True)
     set_logging(verbose)
+    dump_normalized_aliases(aliases, output)
+
+
+def dump_normalized_aliases(aliases: List[Alias], output: Union[Path | str]) -> None:
     content = get_new_aliases(aliases)
     with open(output, "w", encoding="utf8") as f:
         json.dump(content, f, indent=4, sort_keys=True, ensure_ascii=False)
@@ -39,5 +43,7 @@ def get_new_aliases(
         }
         if alias.team != DEFAULT_TEAM_ROLE:
             updated_alias["team"] = alias.team
+        if alias.comment:
+            updated_alias["comment"] = alias.comment
         result[alias.authoritative_mail] = updated_alias
     return result
