@@ -1,3 +1,4 @@
+import json
 import logging
 from pathlib import Path
 
@@ -23,7 +24,7 @@ def test_pylint_extraction(tmp_path: Path, caplog: pytest.LogCaptureFixture) -> 
         ]
     )
     with open(output, encoding="utf8") as f:
-        content = f.read()
+        content = json.load(f)
     with open(expected_contributors_aliases, encoding="utf8") as f:
-        expected = f.read()
+        expected = json.load(f)
     assert content == expected

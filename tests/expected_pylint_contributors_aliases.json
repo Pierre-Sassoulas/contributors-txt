@@ -36,7 +36,7 @@
     "team": "Maintainers"
   },
   "31987769+sushobhit27@users.noreply.github.com": {
-    "comment": "(sushobhit27)",
+    "comment": "(sushobhit27)\n  * Added new check 'comparison-with-itself'.\n  * Added new check 'useless-import-alias'.\n  * Added support of annotations in missing-type-doc and missing-return-type-doc.\n  * Added new check 'comparison-with-callable'.\n  * Removed six package dependency.\n  * Added new check 'chained-comparison'.\n  * Added new check 'useless-object-inheritance'.",
     "mails": [
       "sushobhitsolanki@gmail.com",
       "31987769+sushobhit27@users.noreply.github.com"
@@ -89,6 +89,7 @@
     "name": "Tiago Honorato"
   },
   "62866982+SupImDos@users.noreply.github.com": {
+    "comment": "\n  * Fixed \"no-self-use\" for async methods\n  * Fixed \"docparams\" extension for async functions and methods",
     "mails": ["62866982+SupImDos@users.noreply.github.com"],
     "name": "Hayden Richards"
   },
@@ -107,7 +108,7 @@
     "name": "Sam Vermeiren"
   },
   "95424144+allanc65@users.noreply.github.com": {
-    "comment": "(allanc65)",
+    "comment": "(allanc65)\n  * Fixed issue 5452, false positive missing-param-doc for multi-line Google-style params",
     "mails": ["95424144+allanc65@users.noreply.github.com"],
     "name": "Allan Chandler"
   },
@@ -120,19 +121,22 @@
     "name": "Konstantin"
   },
   "Humetsky@gmail.com": {
-    "comment": "(mhumetskyi)",
+    "comment": "(mhumetskyi)\n  * Fixed ignored empty functions by similarities checker with \"ignore-signatures\" option enabled\n  * Ignore function decorators signatures as well by similarities checker with \"ignore-signatures\" option enabled\n  * Ignore class methods and nested functions signatures as well by similarities checker with \"ignore-signatures\" option enabled",
     "mails": ["Humetsky@gmail.com"],
     "name": "Maksym Humetskyi"
   },
   "Mariatta@users.noreply.github.com": {
+    "comment": "\n  * Added new check `logging-fstring-interpolation`\n  * Documentation typo fixes",
     "mails": ["Mariatta@users.noreply.github.com", "mariatta@python.org"],
     "name": "Mariatta Wijaya"
   },
   "MartinBasti@users.noreply.github.com": {
+    "comment": "\n  * Added new check for shallow copy of os.environ\n  * Added new check for useless `with threading.Lock():` statement",
     "mails": ["MartinBasti@users.noreply.github.com"],
     "name": "Martin Bašti"
   },
   "Pablogsal@gmail.com": {
+    "comment": "\n  * Fix false positive 'Non-iterable value' with async comprehensions.",
     "mails": ["Pablogsal@gmail.com"],
     "name": "Pablo Galindo Salgado"
   },
@@ -141,7 +145,7 @@
     "name": "Paul Renvoisé"
   },
   "adityagupta1089@users.noreply.github.com": {
-    "comment": "(adityagupta1089)",
+    "comment": "(adityagupta1089)\n  * Added ignore_signatures to duplicate checker",
     "mails": ["adityagupta1089@users.noreply.github.com"],
     "name": "Aditya Gupta"
   },
@@ -161,6 +165,7 @@
     "name": "Alexandre Fayolle"
   },
   "alvaro.frias@eclypsium.com": {
+    "comment": "\n\n\nCo-Author\n---------\nThe following persons were credited manually but did not commit themselves\nunder this name, or we did not manage to find their commits in the history.\n",
     "mails": ["alvaro.frias@eclypsium.com"],
     "name": "Alvaro Frias Garay"
   },
@@ -174,6 +179,7 @@
     "name": "Andrew J. Simmons"
   },
   "areveny@protonmail.com": {
+    "comment": "\n\n\nContributors\n------------\n\nWe would not be here without folks that contributed patches, pull requests,\nissues and their time to pylint. We're incredibly grateful to all of these\ncontributors:\n",
     "mails": [
       "areveny@protonmail.com",
       "self@areveny.com",
@@ -204,7 +210,7 @@
     "name": "Athos Ribeiro"
   },
   "atodorov@otb.bg": {
-    "comment": ":",
+    "comment": ":\n  * added new error conditions to 'bad-super-call',\n  * Added new check for incorrect len(SEQUENCE) usage,\n  * Added new extension for comparison against empty string constants,\n  * Added new extension which detects comparing integers to zero,\n  * Added new useless-return checker,\n  * Added new try-except-raise checker",
     "mails": ["atodorov@otb.bg"],
     "name": "Alexander Todorov"
   },
@@ -254,7 +260,7 @@
     "name": "bot"
   },
   "brett@python.org": {
-    "comment": ":",
+    "comment": ":\n  * Port source code to be Python 2/3 compatible\n  * Python 3 checker",
     "mails": ["brett@python.org"],
     "name": "Brett Cannon"
   },
@@ -292,7 +298,7 @@
     "name": "Carey Metcalfe"
   },
   "carli.freudenberg@energymeteo.de": {
-    "comment": "(CarliJoy)",
+    "comment": "(CarliJoy)\n  * Fixed issue 5281, added Unicode checker\n  * Improve non-ascii-name checker",
     "mails": ["carli.freudenberg@energymeteo.de"],
     "name": "Carli Freudenberg"
   },
@@ -358,6 +364,7 @@
     "name": "David Lindquist"
   },
   "dmand@yandex.ru": {
+    "comment": "\n  * multiple-imports, not-iterable, not-a-mapping, various patches.",
     "mails": ["dmand@yandex.ru"],
     "name": "Dimitri Prybysh",
     "team": "Maintainers"
@@ -457,12 +464,12 @@
     "name": "Hornwitser"
   },
   "glenn@e-dad.net": {
-    "comment": ":",
+    "comment": ":\n  * autogenerated documentation for optional extensions,\n  * bug fixes and enhancements for docparams (née check_docs) extension",
     "mails": ["glenn@e-dad.net", "glmatthe@cisco.com"],
     "name": "Glenn Matthews"
   },
   "godfryd@gmail.com": {
-    "comment": ":",
+    "comment": ":\n  * wrong-spelling-in-comment\n  * wrong-spelling-in-docstring\n  * parallel execution on multiple CPUs",
     "mails": ["godfryd@gmail.com"],
     "name": "Michal Nowikowski"
   },
@@ -536,7 +543,7 @@
     "name": "James Morgensen"
   },
   "jeroenseegers@users.noreply.github.com": {
-    "comment": ":",
+    "comment": ":\n  * Fixed `toml` dependency issue",
     "mails": ["jeroenseegers@users.noreply.github.com"],
     "name": "Jeroen Seegers"
   },
@@ -582,7 +589,7 @@
     "name": "laike9m"
   },
   "laura.medioni@logilab.fr": {
-    "comment": "(Logilab, on behalf of the CNES):",
+    "comment": "(Logilab, on behalf of the CNES):\n  * misplaced-comparison-constant\n  * no-classmethod-decorator\n  * no-staticmethod-decorator\n  * too-many-nested-blocks,\n  * too-many-boolean-expressions\n  * unneeded-not\n  * wrong-import-order\n  * ungrouped-imports,\n  * wrong-import-position\n  * redefined-variable-type",
     "mails": ["laura.medioni@logilab.fr", "lmedioni@logilab.fr"],
     "name": "Laura Médioni"
   },
@@ -609,6 +616,10 @@
     "comment": "(luigibertaco)",
     "mails": ["luigi.cristofolini@q-ctrl.com", "lucristofolini@gmail.com"],
     "name": "Luigi Bertaco Cristofolini"
+  },
+  "ludal@logilab.fr": {
+    "mails": ["ludal@logilab.fr"],
+    "name": "Ludovic Aubry"
   },
   "m.fesenko@corp.vk.com": {
     "mails": ["m.fesenko@corp.vk.com", "proggga@gmail.com"],
@@ -637,7 +648,7 @@
     "team": "Maintainers"
   },
   "mbp@google.com": {
-    "comment": "(Google):",
+    "comment": "(Google):\n  * warnings for anomalous backslashes\n  * symbolic names for messages (like 'unused')\n  * etc.",
     "mails": ["mbp@google.com"],
     "name": "Martin Pool"
   },
@@ -670,7 +681,7 @@
     "name": "Erik Eriksson"
   },
   "moylop260@vauxoo.com": {
-    "comment": "(Vauxoo):",
+    "comment": "(Vauxoo):\n  * Support for deprecated-modules in modules not installed,\n  * Refactor wrong-import-order to integrate it with `isort` library\n  * Add check too-complex with mccabe for cyclomatic complexity\n  * Refactor wrong-import-position to skip try-import and nested cases\n  * Add consider-merging-isinstance, superfluous-else-return\n  * Fix consider-using-ternary for 'True and True and True or True' case\n  * Add bad-docstring-quotes and docstring-first-line-empty\n  * Add missing-timeout",
     "mails": ["moylop260@vauxoo.com"],
     "name": "Moisés López"
   },
@@ -787,7 +798,7 @@
     "team": "Maintainers"
   },
   "roy.williams.iii@gmail.com": {
-    "comment": "(Lyft)",
+    "comment": "(Lyft)\n  * added check for implementing __eq__ without implementing __hash__,\n  * Added Python 3 check for accessing Exception.message.\n  * Added Python 3 check for calling encode/decode with invalid codecs.\n  * Added Python 3 check for accessing sys.maxint.\n  * Added Python 3 check for bad import statements.\n  * Added Python 3 check for accessing deprecated methods on the 'string' module,\n    various patches.",
     "mails": ["roy.williams.iii@gmail.com", "rwilliams@lyft.com"],
     "name": "Roy Williams",
     "team": "Maintainers"
@@ -816,6 +827,7 @@
     "name": "Samuel Freilich"
   },
   "shlomme@gmail.com": {
+    "comment": "\n\n\nMaintainers\n-----------",
     "mails": ["shlomme@gmail.com", "tmarek@google.com"],
     "name": "Torsten Marek",
     "team": "Ex-maintainers"
@@ -844,6 +856,11 @@
   "tanant@users.noreply.github.com": {
     "mails": ["tanant@users.noreply.github.com"],
     "name": "Anthony Tan"
+  },
+  "tbekolay@gmail.com": {
+    "comment": "\n  * Added --list-msgs-enabled command",
+    "mails": ["tbekolay@gmail.com"],
+    "name": "Trevor Bekolay"
   },
   "thenault@gmail.com": {
     "comment": ": main author / maintainer",
@@ -891,5 +908,10 @@
   "yileiyang@google.com": {
     "mails": ["yileiyang@google.com"],
     "name": "Yilei \"Dolee\" Yang"
+  },
+  "zebedee.nicholls@climate-energy-college.org": {
+    "comment": "\n  * Made W9011 compatible with 'of' syntax in return types",
+    "mails": ["zebedee.nicholls@climate-energy-college.org"],
+    "name": "Zeb Nicholls"
   }
 }
