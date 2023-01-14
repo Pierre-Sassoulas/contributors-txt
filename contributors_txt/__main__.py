@@ -5,7 +5,7 @@ Create a file listing the contributors of a git repository.
 import argparse
 import logging
 from pathlib import Path
-from typing import List, Optional, Union
+from typing import Optional, Union
 
 from contributors_txt.const import DEFAULT_CONTRIBUTOR_PATH
 from contributors_txt.create_content import (
@@ -16,14 +16,14 @@ from contributors_txt.create_content import (
 from contributors_txt.update_content import update_content
 
 
-def main(args: Optional[List[str]] = None) -> None:
+def main(args: Optional[list[str]] = None) -> None:
     parsed_args = parse_args(args)
     create_contributors_txt(
         parsed_args.aliases, parsed_args.output, parsed_args.verbose
     )
 
 
-def parse_args(args: Optional[List[str]] = None) -> argparse.Namespace:
+def parse_args(args: Optional[list[str]] = None) -> argparse.Namespace:
     parser = argparse.ArgumentParser(__doc__)
     add_default_arguments(parser)
     parser.add_argument(
