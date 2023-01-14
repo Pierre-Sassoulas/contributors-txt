@@ -51,13 +51,12 @@ def extract_comment(input_path: Path, aliases_path: Path, output_path: Path) -> 
         ):
             aliases[authoritative_mail] = new_alias
     dump_normalized_aliases(list(aliases.values()), output_path)
-    dump_normalized_aliases(list(aliases.values()), "a.json")
 
 
 def _get_new_alias(
     authoritative_mail: str, old_alias: Optional[Alias], input_: dict[str, str]
 ) -> Alias:
-    comment = input_.get("comment", "").strip(" ")
+    comment = input_.get("comment", "")
     if old_alias is None:
         name_ = input_["name"].rstrip(" ")
         return Alias(
