@@ -45,7 +45,7 @@ def get_aliases(
                     warnings.warn(
                         "Using old copyrite format, you should use the configuration "
                         "normalization with 'contributors-txt-normalize-configuration'",
-                        stacklevel=2
+                        stacklevel=2,
                     )
                 if "authoritative_mail" not in alias:
                     alias["authoritative_mail"] = None
