@@ -52,6 +52,7 @@ def get_aliases(
                 if "team" not in alias:
                     alias["team"] = DEFAULT_TEAM_ROLE
                 python_alias = Alias(**alias)
+            # pylint: disable-next=possibly-used-before-assignment
             aliases.append(python_alias)
     return aliases
 
