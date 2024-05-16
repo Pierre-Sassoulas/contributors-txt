@@ -31,6 +31,7 @@ def get_aliases(
         parsed_aliases = json.load(f)
         for alias in parsed_aliases:
             # logging.debug("Alias: %s", alias)
+            python_alias = None
             if isinstance(alias, str):
                 if "team" not in parsed_aliases[alias]:
                     parsed_aliases[alias]["team"] = DEFAULT_TEAM_ROLE
