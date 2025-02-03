@@ -5,7 +5,7 @@ import logging
 import subprocess
 import warnings
 from pathlib import Path
-from typing import NamedTuple, Optional, Union
+from typing import NamedTuple
 
 from contributors_txt.const import (
     DEFAULT_TEAM_ROLE,
@@ -17,14 +17,14 @@ from contributors_txt.const import (
 
 class Alias(NamedTuple):
     mails: list[str]
-    authoritative_mail: Optional[str]
+    authoritative_mail: str | None
     name: str
     team: str
-    comment: Optional[str] = None
+    comment: str | None = None
 
 
 def get_aliases(
-    aliases_file: Union[Path, str, None], normalize: bool = False
+    aliases_file: Path | str | None, normalize: bool = False
 ) -> list[Alias]:
     aliases: list[Alias] = []
     if aliases_file is None:
@@ -62,9 +62,9 @@ def get_aliases(
 class Person(NamedTuple):
     number_of_commits: int
     name: str
-    mail: Optional[str]
+    mail: str | None
     team: str
-    comment: Optional[str]
+    comment: str | None
 
     def __gt__(self, other: Person) -> bool:  # type: ignore[override]
         """Permit sorting contributors by number of commits."""
@@ -90,7 +90,7 @@ class Person(NamedTuple):
             self.comment,
         )
 
-    def get_template(self, template: str, other: Optional[Person] = None) -> str:
+    def get_template(self, template: str, other: Person | None = None) -> str:
         template += f'"{self.mail}": '
         template += "{"
         mail = self.mail[1:-1] if self.mail is not None else ""
@@ -215,9 +215,9 @@ def _parse_person(unparsed_person: str, aliases: list[Alias]) -> Person:
     splitted_person = unparsed_person.split()
     number_of_commit, *names = splitted_person[:-1]
     name = " ".join(names)
-    mail: Optional[str] = splitted_person[-1][1:-1]
+    mail: str | None = splitted_person[-1][1:-1]
     team = DEFAULT_TEAM_ROLE
-    comment: Optional[str] = ""
+    comment: str | None = ""
     if mail == "none@none":
         mail = None
     for alias in aliases:

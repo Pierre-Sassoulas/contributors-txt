@@ -3,7 +3,6 @@ from __future__ import annotations
 import logging
 from difflib import SequenceMatcher
 from pathlib import Path
-from typing import Union
 
 from contributors_txt.create_content import (
     Alias,
@@ -20,7 +19,7 @@ def similar(a_string: str, another_string: str) -> float:
 
 
 def update_content(
-    output: Union[Path, str],
+    output: Path | str,
     aliases: list[Alias],
     shortlog_output: str,
     configuration_file: str,
@@ -97,7 +96,9 @@ def order_by_commit_in_team(
             if team_member.mail and team_member.mail in existing_person:
                 # logging.debug(f"Placing {team_member.name}: {existing_person}")
                 # if person_found:
-                #     raise RuntimeError(f"{team_member.mail} is duplicated {existing_person}!")
+                #     raise RuntimeError(
+                #         f"{team_member.mail} is duplicated {existing_person}!"
+                #     )
                 person_found = add_person(
                     consumed, existing_person, i, new_team, person_found
                 )
