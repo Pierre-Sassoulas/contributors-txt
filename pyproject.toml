@@ -78,15 +78,12 @@ lint.select = [
   "UP",      # pyupgrade
   "W",       # pycodestyle
 ]
-
-[tool.isort]
-known_third_party = [
-  "pytest",
-  "setuptools",
+lint.ignore = [
+  "PLR2004",
 ]
 
 [tool.pylint.main]
-disable = [ "missing-docstring", "too-few-public-methods" ]
+disable = [ "missing-docstring", "too-few-public-methods", "wrong-import-order" ]
 
 [tool.mypy]
 scripts_are_modules = true
