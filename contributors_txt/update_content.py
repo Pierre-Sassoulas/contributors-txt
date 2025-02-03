@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import logging
 from difflib import SequenceMatcher
 from pathlib import Path

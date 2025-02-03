@@ -2,7 +2,6 @@ import logging
 from pathlib import Path
 
 import pytest
-
 from contributors_txt.normalize import main
 
 HERE = Path(__file__).parent

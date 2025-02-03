@@ -3,7 +3,6 @@ import logging
 from pathlib import Path
 
 import pytest
-
 from contributors_txt.extract_comment import main
 
 HERE = Path(__file__).parent

@@ -1,6 +1,7 @@
+"""Create a file listing the contributors of a git repository.
 """
-Create a file listing the contributors of a git repository.
-"""
+
+from __future__ import annotations
 
 import argparse
 import logging
