@@ -14,6 +14,7 @@ readme.file = "README.md"
 authors = [
   { name = "Pierre Sassoulas", email = "pierre.sassoulas@gmail.com" },
 ]
+requires-python = ">=3.9.0"
 classifiers = [
   "Intended Audience :: Developers",
   "License :: OSI Approved :: MIT License",
@@ -26,7 +27,6 @@ classifiers = [
   "Programming Language :: Python :: 3.13",
 ]
 dependencies = [  ]
-
 optional-dependencies.test = [
   "coverage<8",
   "coveralls",
@@ -52,16 +52,38 @@ exclude = [
 ]
 namespaces = false
 
+[tool.ruff]
+target-version = "py39"
+line-length = 88
+src = [
+  "src",
+]
+format.docstring-code-format = true
+lint.select = [
+  "B",       # bugbear
+  "E",       # pycodestyle
+  "F",       # pyflakes
+  "FA100",   # add future annotations
+  "I",       # isort
+  "PGH004",  # pygrep-hooks - Use specific rule codes when using noqa
+  "PIE",     # flake8-pie
+  "PLC",     # pylint convention
+  "PLE",     # pylint error
+  "PLR",     # pylint refactor
+  "PLR1714", # Consider merging multiple comparisons
+  "PLW",     # pylint warning
+  "PYI",     # flake8-pyi
+  "RUF",     # ruff
+  "T100",    # flake8-debugger
+  "UP",      # pyupgrade
+  "W",       # pycodestyle
+]
+
 [tool.isort]
-multi_line_output = 3
-line_length = 88
 known_third_party = [
   "pytest",
+  "setuptools",
 ]
-known_first_party = [
-  "contributors_txt",
-]
-include_trailing_comma = true
 
 [tool.pylint.main]
 disable = [ "missing-docstring", "too-few-public-methods" ]

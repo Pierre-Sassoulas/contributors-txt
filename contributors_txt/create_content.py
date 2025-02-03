@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import json
 import logging
 import subprocess
@@ -64,11 +66,11 @@ class Person(NamedTuple):
     team: str
     comment: Optional[str]
 
-    def __gt__(self, other: "Person") -> bool:  # type: ignore[override]
+    def __gt__(self, other: Person) -> bool:  # type: ignore[override]
         """Permit sorting contributors by number of commits."""
         return self.number_of_commits.__gt__(other.number_of_commits)
 
-    def __add__(self, other: "Person") -> "Person":  # type: ignore[override]
+    def __add__(self, other: Person) -> Person:  # type: ignore[override]
         assert self.name == other.name, f"{self.name} != {other.name}"
         template = (
             f"Mails are not the same: {self.mail} != {other.mail} "
@@ -88,7 +90,7 @@ class Person(NamedTuple):
             self.comment,
         )
 
-    def get_template(self, template: str, other: Optional["Person"] = None) -> str:
+    def get_template(self, template: str, other: Optional[Person] = None) -> str:
         template += f'"{self.mail}": '
         template += "{"
         mail = self.mail[1:-1] if self.mail is not None else ""

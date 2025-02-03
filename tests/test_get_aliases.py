@@ -1,7 +1,6 @@
 from pathlib import Path
 
 import pytest
-
 from contributors_txt.const import DEFAULT_TEAM_ROLE
 from contributors_txt.create_content import Alias, get_aliases
 

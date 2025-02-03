@@ -1,9 +1,8 @@
 import logging
 
 import pytest
-from pytest import LogCaptureFixture
-
 from contributors_txt.create_content import create_content
+from pytest import LogCaptureFixture
 
 
 @pytest.mark.parametrize(  # type: ignore[misc]
