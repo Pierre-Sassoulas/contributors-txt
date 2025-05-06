@@ -31,7 +31,7 @@ optional-dependencies.test = [
   "coverage<8",
   "coveralls",
   "pre-commit>=1.16",
-  "pylint==3.3.6",
+  "pylint==3.3.7",
   "pytest-cov",
   "pytest-vcr",
 ]
