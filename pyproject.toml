@@ -1,6 +1,5 @@
 [build-system]
 build-backend = "setuptools.build_meta"
-
 requires = [
   "setuptools>=61.2",
 ]
@@ -27,7 +26,7 @@ classifiers = [
   "Programming Language :: Python :: 3.13",
   "Programming Language :: Python :: 3.14",
 ]
-dependencies = [  ]
+dependencies = []
 optional-dependencies.test = [
   "coverage<8",
   "coveralls",
@@ -43,15 +42,13 @@ scripts.contributors-txt-normalize-configuration = "contributors_txt.normalize:m
 
 [tool.setuptools]
 include-package-data = false
-
-[tool.setuptools.packages.find]
-include = [
+packages.find.include = [
   "contributors_txt*",
 ]
-exclude = [
+packages.find.exclude = [
   "tests.*",
 ]
-namespaces = false
+packages.find.namespaces = false
 
 [tool.ruff]
 target-version = "py39"
@@ -83,8 +80,8 @@ lint.ignore = [
   "PLR2004",
 ]
 
-[tool.pylint.main]
-disable = [ "missing-docstring", "too-few-public-methods", "wrong-import-order" ]
+[tool.pylint]
+main.disable = [ "missing-docstring", "too-few-public-methods", "wrong-import-order" ]
 
 [tool.mypy]
 scripts_are_modules = true
@@ -92,15 +89,11 @@ no_implicit_optional = true
 warn_redundant_casts = true
 show_error_codes = true
 strict = true
-
-[[tool.mypy.overrides]]
-module = [
-  "setuptools",
+overrides = [
+  { module = [
+    "setuptools",
+  ], ignore_missing_imports = true },
+  { module = [
+    "pytest",
+  ], ignore_missing_imports = true },
 ]
-ignore_missing_imports = true
-
-[[tool.mypy.overrides]]
-module = [
-  "pytest",
-]
-ignore_missing_imports = true

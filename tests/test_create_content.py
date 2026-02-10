@@ -5,7 +5,7 @@ from contributors_txt.create_content import create_content
 from pytest import LogCaptureFixture
 
 
-@pytest.mark.parametrize(  # type: ignore[misc]
+@pytest.mark.parametrize(  # type: ignore[untyped-decorator]
     "shortlog_output,expected",
     [
         [
