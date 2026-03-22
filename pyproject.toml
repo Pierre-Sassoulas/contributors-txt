@@ -6,7 +6,7 @@ requires = [
 
 [project]
 name = "contributors-txt"
-version = "1.0.0"
+version = "1.0.1"
 description = "Generate a list of contributors automatically from git data"
 readme.content-type = "text/markdown"
 readme.file = "README.md"
