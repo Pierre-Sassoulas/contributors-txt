@@ -160,37 +160,26 @@ def add_email_if_missing(current_result: str, teams: dict[str, list[Person]]) ->
             continue
         team_members = teams[team_name]
         logging.debug("Updating team %s", team_name)
+        section_slice = current_result[begin:end]
         for team_member in team_members:
             if not person_should_be_shown(team_member):
                 continue
-            if team_member.name in current_result[begin:end]:
-                if team_member.mail and team_member.mail in current_result[begin:end]:
-                    check_for_duplication(current_result, team_member)
-                    continue
-                if team_member.mail:
-                    if team_member.name.find(" ") != -1:
-                        logging.debug(
-                            "For %s in %s: Adding email", team_member, team_name
-                        )
-                        new_team = new_team.replace(
-                            team_member.name, f"{team_member.name} {team_member.mail}"
-                        )
-                    else:
-                        logging.debug(
-                            "For %s, there's only a one word name not replacing "
-                            "anything but it exists.",
-                            repr(team_member),
-                        )
-                    continue
+            if team_member.name in section_slice:
+                new_team = _add_email_to_existing(
+                    current_result, new_team, team_member, team_name,
+                    section_slice,
+                )
             elif team_member.mail is not None and team_member.mail in current_result:
                 base_message = (
                     f"'{team_member}' already exists in the file at "
                     f"{current_result.find(team_member.mail)} "
-                    f"({team_boundary}) but is not in the proper section, it should"
-                    f"be '{team_name}', please fix manually. Did you consider "
-                    "uniformizing the name ? :\n"
+                    f"({team_boundary}) but is not in the proper section, "
+                    f"it should be '{team_name}', please fix manually. Did "
+                    "you consider uniformizing the name ? :\n"
                 )
-                raise RuntimeError(team_member.get_template(base_message) + "}\n")
+                raise RuntimeError(
+                    team_member.get_template(base_message) + "}\n"
+                )
             elif team_member.mail:
                 new_team = _insert_person_by_commits(
                     new_team, team_member, team_members
@@ -203,43 +192,68 @@ def add_email_if_missing(current_result: str, teams: dict[str, list[Person]]) ->
     return "".join(new_teams)
 
 
+def _add_email_to_existing(
+    current_result: str,
+    new_team: str,
+    team_member: Person,
+    team_name: str,
+    section_slice: str,
+) -> str:
+    if team_member.mail and team_member.mail in section_slice:
+        check_for_duplication(current_result, team_member)
+        return new_team
+    if not team_member.mail:
+        return new_team
+    if team_member.name.find(" ") != -1:
+        logging.debug("For %s in %s: Adding email", team_member, team_name)
+        return new_team.replace(
+            team_member.name, f"{team_member.name} {team_member.mail}"
+        )
+    logging.debug(
+        "For %s, there's only a one word name not replacing "
+        "anything but it exists.",
+        repr(team_member),
+    )
+    return new_team
+
+
 def _insert_person_by_commits(
     section_text: str, new_person: Person, team_members: list[Person]
 ) -> str:
     """Insert a new person into a section, ordered by number of commits."""
     new_line = line_for_person(new_person)
     lines = section_text.split("\n")
+    person_entries = _find_person_entries(lines, team_members)
+    insert_pos = _find_insert_position(lines, person_entries, new_person)
+    lines.insert(insert_pos, new_line.rstrip("\n"))
+    return "\n".join(lines)
 
-    # Build list of (line_index, commits) for existing person entries
-    person_entries: list[tuple[int, int]] = []
+
+def _find_person_entries(
+    lines: list[str], team_members: list[Person]
+) -> list[tuple[int, int]]:
+    """Return (line_index, commit_count) for person lines matched to team members."""
+    entries: list[tuple[int, int]] = []
     for i, line in enumerate(lines):
         if not line.startswith("- "):
             continue
-        commits = 0
         for tm in team_members:
             if tm.mail and tm.mail in line:
-                commits = tm.number_of_commits
+                entries.append((i, tm.number_of_commits))
                 break
-        if commits > 0:
-            person_entries.append((i, commits))
+    return entries
 
+
+def _find_insert_position(
+    lines: list[str],
+    person_entries: list[tuple[int, int]],
+    new_person: Person,
+) -> int:
+    """Find the line index where a new person should be inserted."""
     if not person_entries:
-        # No matched entries, find last "- " line and insert after it
-        last_person_idx = None
-        for i, line in enumerate(lines):
-            if line.startswith("- "):
-                last_person_idx = i
-        if last_person_idx is not None:
-            insert_pos = _end_of_person_entry(lines, last_person_idx)
-        else:
-            # No person entries at all, append before trailing whitespace
-            insert_pos = len(lines)
-            while insert_pos > 0 and lines[insert_pos - 1].strip() == "":
-                insert_pos -= 1
-        lines.insert(insert_pos, new_line.rstrip("\n"))
-        return "\n".join(lines)
+        return _fallback_insert_position(lines)
 
-    # Find insertion point: after the last matched person with >= commits
+    # After the last matched person with >= commits
     insert_after_idx = None
     for line_idx, commits in person_entries:
         if commits >= new_person.number_of_commits:
@@ -247,12 +261,23 @@ def _insert_person_by_commits(
 
     if insert_after_idx is None:
         # More commits than all matched entries, insert before first matched
-        insert_pos = person_entries[0][0]
-    else:
-        insert_pos = _end_of_person_entry(lines, insert_after_idx)
+        return person_entries[0][0]
+    return _end_of_person_entry(lines, insert_after_idx)
 
-    lines.insert(insert_pos, new_line.rstrip("\n"))
-    return "\n".join(lines)
+
+def _fallback_insert_position(lines: list[str]) -> int:
+    """Find insert position when no matched person entries exist."""
+    last_person_idx = None
+    for i, line in enumerate(lines):
+        if line.startswith("- "):
+            last_person_idx = i
+    if last_person_idx is not None:
+        return _end_of_person_entry(lines, last_person_idx)
+    # No person entries at all, append before trailing whitespace
+    pos = len(lines)
+    while pos > 0 and lines[pos - 1].strip() == "":
+        pos -= 1
+    return pos
 
 
 def _end_of_person_entry(lines: list[str], person_line_idx: int) -> int:
