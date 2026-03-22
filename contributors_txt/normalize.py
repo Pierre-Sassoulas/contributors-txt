@@ -40,7 +40,7 @@ def get_new_aliases(
     result = {}
     for alias in aliases:
         updated_alias = {
-            "mails": alias.mails,
+            "mails": sorted(alias.mails),
             "name": alias.name,
         }
         if alias.team != DEFAULT_TEAM_ROLE:
