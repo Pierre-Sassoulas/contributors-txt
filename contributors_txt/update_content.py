@@ -24,6 +24,7 @@ def update_content(
     aliases: list[Alias],
     shortlog_output: str,
     configuration_file: str,
+    no_bots: bool = False,
 ) -> str:
     result: str = ""
     header: str = f"""\
@@ -34,7 +35,7 @@ def update_content(
 # Please verify that your change are stable if you modify manually.
 
 """
-    persons = persons_from_shortlog(aliases, shortlog_output)
+    persons = persons_from_shortlog(aliases, shortlog_output, no_bots=no_bots)
     with open(output, encoding="utf8") as f:
         current_output = f.read()
     result = update_teams(
