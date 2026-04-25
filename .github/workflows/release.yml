@@ -15,6 +15,9 @@ jobs:
     steps:
       - name: Check out code from Github
         uses: actions/checkout@v6.0.2
+        with:
+          # setuptools-scm reads the version from the latest reachable git tag.
+          fetch-depth: 0
       - name: Set up Python ${{ env.DEFAULT_PYTHON }}
         id: python
         uses: actions/setup-python@v6.2.0
