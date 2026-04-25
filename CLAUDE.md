@@ -67,5 +67,7 @@ are listed in `.prettierignore` so prettier won't reformat them.
 
 ## Release
 
-Bump version in `pyproject.toml`, create a GitHub release with tag — CI auto-publishes
-to PyPI.
+Versioning is handled by `setuptools-scm` from git tags — do not edit a `version` field.
+Create a GitHub release with a `vX.Y.Z` tag; CI fetches full history, `setuptools-scm`
+resolves the version from the tag, and `release.yml` publishes to PyPI. Untagged dev
+builds get a `X.Y.Z.devN+g<sha>` version automatically.

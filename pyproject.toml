@@ -2,11 +2,11 @@
 build-backend = "setuptools.build_meta"
 requires = [
   "setuptools>=61.2",
+  "setuptools-scm>=8",
 ]
 
 [project]
 name = "contributors-txt"
-version = "1.0.1"
 description = "Generate a list of contributors automatically from git data"
 readme.content-type = "text/markdown"
 readme.file = "README.md"
@@ -26,6 +26,7 @@ classifiers = [
   "Programming Language :: Python :: 3.13",
   "Programming Language :: Python :: 3.14",
 ]
+dynamic = [ "version" ]
 dependencies = []
 optional-dependencies.test = [
   "coverage<8",
@@ -50,6 +51,8 @@ packages.find.exclude = [
   "tests.*",
 ]
 packages.find.namespaces = false
+
+[tool.setuptools_scm]
 
 [tool.ruff]
 target-version = "py39"
