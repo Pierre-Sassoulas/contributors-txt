@@ -10,7 +10,7 @@ from pytest_remaster import CaseData, GoldenMaster, discover_test_cases
 CASES_DIR = Path(__file__).parent / "normalize_cases"
 
 
-@pytest.mark.parametrize("case", discover_test_cases(CASES_DIR))  # type: ignore[untyped-decorator]
+@pytest.mark.parametrize("case", discover_test_cases(CASES_DIR))
 def test_normalize(
     case: CaseData,
     tmp_path: Path,
@@ -25,7 +25,7 @@ def test_normalize(
     assert not recwarn
 
 
-@pytest.mark.parametrize("case", discover_test_cases(CASES_DIR))  # type: ignore[untyped-decorator]
+@pytest.mark.parametrize("case", discover_test_cases(CASES_DIR))
 def test_normalize_is_idempotent(
     case: CaseData,
     tmp_path: Path,

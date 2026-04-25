@@ -34,14 +34,7 @@ repos:
         types: [python]
         args: []
         require_serial: true
-        additional_dependencies:
-          [
-            "types-pkg_resources==0.1.3",
-            "types-six",
-            "types-attrs",
-            "types-python-dateutil",
-            "types-typed-ast",
-          ]
+        additional_dependencies: ["pytest-remaster"]
   - repo: https://github.com/rbubley/mirrors-prettier
     rev: v3.8.3
     hooks:
