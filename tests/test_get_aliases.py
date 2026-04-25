@@ -1,30 +1,31 @@
+from __future__ import annotations
+
+import json
 from pathlib import Path
 
 import pytest
-from contributors_txt.const import DEFAULT_TEAM_ROLE
-from contributors_txt.create_content import Alias, get_aliases
+from contributors_txt.create_content import get_aliases
+from pytest_remaster import CaseData, GoldenMaster, discover_test_cases
 
-aliases_file = Path(__file__).parent / ".contributors_aliases.json"
+CASES_DIR = Path(__file__).parent / "get_aliases_cases"
 
 
-def test_basic(recwarn: pytest.WarningsRecorder) -> None:
-    aliases = get_aliases(aliases_file)
-    assert aliases == [
-        Alias(
-            mails=[
-                "66853113+pre-commit-ci[bot]@users.noreply.github.com",
-                "49699333+dependabot[bot]@users.noreply.github.com",
-            ],
-            authoritative_mail="bot@noreply.github.com",
-            name="bot",
-            team=DEFAULT_TEAM_ROLE,
-        ),
-        Alias(
-            mails=["66853113+pre-commit-ci[bot]@users.noreply.github.com"],
-            authoritative_mail="bot@noreply.github.com",
-            name="pre-commit-ci[bot]",
-            team=DEFAULT_TEAM_ROLE,
-        ),
-    ]
-    assert len(recwarn) == 1
-    assert "old copyrite format" in str(recwarn.pop())
+@pytest.mark.parametrize("case", discover_test_cases(CASES_DIR))  # type: ignore[untyped-decorator]
+def test_get_aliases(
+    case: CaseData,
+    golden_master: GoldenMaster,
+    recwarn: pytest.WarningsRecorder,
+) -> None:
+    flags_path = case.input / "flags.json"
+    flags = json.loads(flags_path.read_text()) if flags_path.exists() else {}
+    aliases = get_aliases(case.input / "aliases.json")
+    serialized = json.dumps(
+        [a._asdict() for a in aliases], indent=2, ensure_ascii=False
+    )
+    golden_master.check(serialized, case.input / "expected.json")
+    expected_warning = flags.get("expect_warning")
+    if expected_warning:
+        assert len(recwarn) == 1
+        assert expected_warning in str(recwarn.pop())
+    else:
+        assert not recwarn

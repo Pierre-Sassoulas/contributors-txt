@@ -1,77 +1,24 @@
-import logging
+from __future__ import annotations
+
+import json
+from pathlib import Path
 
 import pytest
 from contributors_txt.create_content import create_content
-from pytest import LogCaptureFixture
+from pytest_remaster import CaseData, GoldenMaster, discover_test_cases
+
+CASES_DIR = Path(__file__).parent / "create_content_cases"
 
 
-@pytest.mark.parametrize(  # type: ignore[untyped-decorator]
-    "shortlog_output,expected",
-    [
-        [
-            "1 name <email@net.com>",
-            "<email@net.com>",
-        ],
-        [
-            "1 another_name <email@net.com>",
-            "- another_name",
-        ],
-        [
-            "\n1 name <aemail@net.com>\n2 another_name <email@net.com>",
-            """- another_name <email@net.com>
-- name <aemail@net.com>
-""",
-        ],
-        [
-            """
-    42  Pierre Sassoulas <pierre.sassoulas@gmail.com>
-     2  dependabot[bot] <49699333+dependabot[bot]@users.noreply.github.com>
-""",
-            "- Pierre Sassoulas <pierre.sassoulas@gmail.com>",
-        ],
-    ],
-)
-def test_basic(shortlog_output: str, expected: str, caplog: LogCaptureFixture) -> None:
-    caplog.set_level(logging.DEBUG)
-    result = create_content(
-        aliases=[], shortlog_output=shortlog_output, configuration_file="foo.conf"
-    )
-    assert expected in result
-    assert "using the configuration in 'foo.conf'" in result
-
-
-BOT_SHORTLOG = """
-    42  Pierre Sassoulas <pierre.sassoulas@gmail.com>
-     7  dependabot[bot] <49699333+dependabot[bot]@users.noreply.github.com>
-     5  pre-commit-ci[bot] <66853113+pre-commit-ci[bot]@users.noreply.github.com>
-     3  github-actions[bot] <41898282+github-actions[bot]@users.noreply.github.com>
-     2  Copilot <198982749+Copilot@users.noreply.github.com>
-     1  Claude <noreply@anthropic.com>
-"""
-
-
-def test_no_bots_excludes_known_bots() -> None:
+@pytest.mark.parametrize("case", discover_test_cases(CASES_DIR))  # type: ignore[untyped-decorator]
+def test_create_content(case: CaseData, golden_master: GoldenMaster) -> None:
+    shortlog = (case.input / "shortlog").read_text(encoding="utf8")
+    flags_path = case.input / "flags.json"
+    flags = json.loads(flags_path.read_text()) if flags_path.exists() else {}
     result = create_content(
         aliases=[],
-        shortlog_output=BOT_SHORTLOG,
+        shortlog_output=shortlog,
         configuration_file="foo.conf",
-        no_bots=True,
+        no_bots=flags.get("no_bots", False),
     )
-    assert "Pierre Sassoulas" in result
-    assert "dependabot" not in result
-    assert "pre-commit-ci" not in result
-    assert "github-actions" not in result
-    assert "Copilot" not in result
-    assert "anthropic.com" not in result
-
-
-def test_default_keeps_bots() -> None:
-    result = create_content(
-        aliases=[],
-        shortlog_output=BOT_SHORTLOG,
-        configuration_file="foo.conf",
-    )
-    assert "dependabot[bot]" in result
-    assert "pre-commit-ci[bot]" in result
-    assert "Copilot" in result
-    assert "anthropic.com" in result
+    golden_master.check(result, case.input / "expected.txt")
