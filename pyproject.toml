@@ -100,9 +100,6 @@ overrides = [
   { module = [
     "pytest",
   ], ignore_missing_imports = true },
-  { module = [
-    "pytest_remaster",
-  ], ignore_missing_imports = true },
 ]
 
 [tool.pytest]

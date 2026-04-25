@@ -10,7 +10,7 @@ from pytest_remaster import CaseData, GoldenMaster, discover_test_cases
 CASES_DIR = Path(__file__).parent / "extract_cases"
 
 
-@pytest.mark.parametrize("case", discover_test_cases(CASES_DIR))  # type: ignore[untyped-decorator]
+@pytest.mark.parametrize("case", discover_test_cases(CASES_DIR))
 def test_extract(
     case: CaseData,
     tmp_path: Path,

@@ -10,7 +10,7 @@ from pytest_remaster import CaseData, GoldenMaster, discover_test_cases
 CASES_DIR = Path(__file__).parent / "create_content_cases"
 
 
-@pytest.mark.parametrize("case", discover_test_cases(CASES_DIR))  # type: ignore[untyped-decorator]
+@pytest.mark.parametrize("case", discover_test_cases(CASES_DIR))
 def test_create_content(case: CaseData, golden_master: GoldenMaster) -> None:
     shortlog = (case.input / "shortlog").read_text(encoding="utf8")
     flags_path = case.input / "flags.json"
