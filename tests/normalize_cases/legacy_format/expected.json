@@ -1,0 +1,8 @@
+{
+    "bot@noreply.github.com": {
+        "mails": [
+            "66853113+pre-commit-ci[bot]@users.noreply.github.com"
+        ],
+        "name": "pre-commit-ci[bot]"
+    }
+}

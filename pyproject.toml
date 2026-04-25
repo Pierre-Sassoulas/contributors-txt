@@ -33,6 +33,7 @@ optional-dependencies.test = [
   "pre-commit>=1.16",
   "pylint==4.0.4",
   "pytest-cov",
+  "pytest-remaster",
   "pytest-vcr",
 ]
 urls.Homepage = "https://github.com/Pierre-Sassoulas/contributors-txt"
@@ -96,4 +97,10 @@ overrides = [
   { module = [
     "pytest",
   ], ignore_missing_imports = true },
+  { module = [
+    "pytest_remaster",
+  ], ignore_missing_imports = true },
 ]
+
+[tool.pytest]
+ini_options.remaster-by-default = false

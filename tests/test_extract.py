@@ -1,29 +1,31 @@
-import json
+from __future__ import annotations
+
 import logging
 from pathlib import Path
 
 import pytest
 from contributors_txt.extract_comment import main
+from pytest_remaster import CaseData, GoldenMaster, discover_test_cases
 
-HERE = Path(__file__).parent
-contributors_aliases = HERE / "pylint_contributors_aliases.json"
-expected_contributors_aliases = HERE / "expected_pylint_contributors_aliases.json"
+CASES_DIR = Path(__file__).parent / "extract_cases"
 
 
-def test_pylint_extraction(tmp_path: Path, caplog: pytest.LogCaptureFixture) -> None:
+@pytest.mark.parametrize("case", discover_test_cases(CASES_DIR))  # type: ignore[untyped-decorator]
+def test_extract(
+    case: CaseData,
+    tmp_path: Path,
+    golden_master: GoldenMaster,
+    caplog: pytest.LogCaptureFixture,
+) -> None:
     caplog.set_level(logging.DEBUG)
-    output = tmp_path / ".contributors_aliases.json"
+    output = tmp_path / "out.json"
     main(
         [
-            str(HERE / "pylint_contributors.txt"),
+            str(case.input / "contributors.txt"),
             "-a",
-            str(contributors_aliases),
+            str(case.input / "aliases.json"),
             "-o",
             str(output),
         ]
     )
-    with open(output, encoding="utf8") as f:
-        content = json.load(f)
-    with open(expected_contributors_aliases, encoding="utf8") as f:
-        expected = json.load(f)
-    assert content == expected
+    golden_master.check(output.read_text(encoding="utf8"), case.input / "expected.json")
