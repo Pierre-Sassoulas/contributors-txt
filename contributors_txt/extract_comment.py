@@ -11,6 +11,8 @@ from contributors_txt.const import DEFAULT_CONTRIBUTOR_PATH, DEFAULT_TEAM_ROLE
 from contributors_txt.create_content import Alias
 from contributors_txt.normalize import dump_normalized_aliases
 
+LOGGER = logging.getLogger(__name__)
+
 THE_REGEX = re.compile(
     r"(?P<name>[\w\-\. ()'\",]+)<(?P<mail>[\w\.@+\- ]+)>(?P<comment>.*)", re.DOTALL
 )
@@ -32,7 +34,7 @@ def main(args: list[str] | None = None) -> None:
     )
     parsed_args: argparse.Namespace = parser.parse_args(args)
     set_logging(parsed_args.verbose)
-    logging.debug("Launching comment extraction with %s", parsed_args)
+    LOGGER.debug("Launching comment extraction with %s", parsed_args)
     extract_comment(
         Path(parsed_args.input), Path(parsed_args.aliases), Path(parsed_args.output)
     )
@@ -68,9 +70,11 @@ def _get_new_alias(
             comment=comment,
         )
     if old_alias.comment and comment:
-        raise ValueError(
-            f"Choose between {old_alias.comment} and {comment} for {authoritative_mail}"
+        msg = (
+            f"Choose between {old_alias.comment} and {comment} "
+            f"for {authoritative_mail}"
         )
+        raise ValueError(msg)
     if comment:
         return Alias(
             authoritative_mail=old_alias.authoritative_mail,
@@ -89,7 +93,7 @@ def _get_input_to_parse(input_path: Path) -> list[dict[str, str]]:
     for input_ in inputs.split("\n- "):
         match = THE_REGEX.match(input_)
         if match is None:
-            logging.warning("Did not match the expected pattern in %s", input_)
+            LOGGER.warning("Did not match the expected pattern in %s", input_)
         else:
             result = match.groupdict()
             results.append(result)

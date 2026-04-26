@@ -4,8 +4,7 @@ import json
 import logging
 import subprocess
 import warnings
-from pathlib import Path
-from typing import NamedTuple
+from typing import TYPE_CHECKING, NamedTuple
 
 from contributors_txt.const import (
     DEFAULT_TEAM_ROLE,
@@ -15,6 +14,11 @@ from contributors_txt.const import (
     NO_SHOW_MAIL,
     NO_SHOW_NAME,
 )
+
+if TYPE_CHECKING:
+    from pathlib import Path
+
+LOGGER = logging.getLogger(__name__)
 
 
 class Alias(NamedTuple):
@@ -144,9 +148,9 @@ def create_content(
 def is_bot(name: str, mail: str | None) -> bool:
     if any(substring in name for substring in KNOWN_BOT_NAME_SUBSTRINGS):
         return True
-    if mail and any(substring in mail for substring in KNOWN_BOT_MAIL_SUBSTRINGS):
-        return True
-    return False
+    if not mail:
+        return False
+    return any(substring in mail for substring in KNOWN_BOT_MAIL_SUBSTRINGS)
 
 
 def persons_from_shortlog(
@@ -195,7 +199,7 @@ def add_teams(persons: dict[str, Person]) -> str:
             result += get_team_header(team_name)
             for team_member in team_members:
                 if not team_member.mail:
-                    logging.warning("%s do not have a proper email", team_member)
+                    LOGGER.warning("%s do not have a proper email", team_member)
                     continue
                 result += line_for_person(team_member)
             result += "\n\n"
