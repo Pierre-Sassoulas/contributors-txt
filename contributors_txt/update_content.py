@@ -3,7 +3,7 @@ from __future__ import annotations
 import logging
 import re
 from difflib import SequenceMatcher
-from pathlib import Path
+from typing import TYPE_CHECKING
 
 from contributors_txt.create_content import (
     Alias,
@@ -13,6 +13,11 @@ from contributors_txt.create_content import (
     person_should_be_shown,
     persons_from_shortlog,
 )
+
+if TYPE_CHECKING:
+    from pathlib import Path
+
+LOGGER = logging.getLogger(__name__)
 
 
 def similar(a_string: str, another_string: str) -> float:
@@ -26,7 +31,6 @@ def update_content(
     configuration_file: str,
     no_bots: bool = False,
 ) -> str:
-    result: str = ""
     header: str = f"""\
 # This file is autocompleted by 'contributors-txt',
 # using the configuration in '{configuration_file}'.
@@ -38,11 +42,10 @@ def update_content(
     persons = persons_from_shortlog(aliases, shortlog_output, no_bots=no_bots)
     with open(output, encoding="utf8") as f:
         current_output = f.read()
-    result = update_teams(
+    return update_teams(
         current_output if header in current_output else header + current_output,
         persons,
     )
-    return result
 
 
 def update_teams(current_result: str, persons: dict[str, Person]) -> str:
@@ -60,7 +63,7 @@ def update_teams(current_result: str, persons: dict[str, Person]) -> str:
 def check_no_email(current_result: str) -> None:
     for part in current_result.split("\n-"):
         if all(c not in part for c in [">", "<", "@"]):
-            logging.warning("There's no email in %s", part)
+            LOGGER.warning("There's no email in %s", part)
 
 
 def order_by_commit(current_result: str, teams: dict[str, list[Person]]) -> str:
@@ -82,21 +85,21 @@ def order_by_commit_in_team(
     team_name: str,
 ) -> str:
     # pylint: disable=too-many-locals
-    logging.debug("Updating team %s", team_name)
+    LOGGER.debug("Updating team %s", team_name)
     begin, end = team_boundary[team_name]
     new_team: list[str] = []
     existing_persons = current_result[begin:end].split("\n-")
-    logging.debug(existing_persons[0])
+    LOGGER.debug(existing_persons[0])
     consumed: list[int] = []
     for _, team_member in enumerate(team_members):
         if not person_should_be_shown(team_member):
             continue
-        # logging.debug(f"Finding the content for %s", repr(team_member))
+        # LOGGER.debug(f"Finding the content for %s", repr(team_member))
         person_found = False
         person_found_by_name = False
         for i, existing_person in enumerate(existing_persons):
             if team_member.mail and team_member.mail in existing_person:
-                # logging.debug(f"Placing {team_member.name}: {existing_person}")
+                # LOGGER.debug(f"Placing {team_member.name}: {existing_person}")
                 # if person_found:
                 #     raise RuntimeError(
                 #         f"{team_member.mail} is duplicated {existing_person}!"
@@ -106,7 +109,7 @@ def order_by_commit_in_team(
                 )
             if team_member.name in existing_person and team_member.mail is None:
                 if similar(team_member.name, existing_person) >= 0.9:
-                    logging.info(
+                    LOGGER.info(
                         "Found %s by name and it's really close.", repr(team_member)
                     )
                     person_found = add_person(
@@ -114,7 +117,7 @@ def order_by_commit_in_team(
                     )
                 else:
                     # The name is not sufficient
-                    logging.warning(
+                    LOGGER.warning(
                         "Found %s in '%s' but not sure if it's really them (no mail),"
                         " please check",
                         repr(team_member),
@@ -122,11 +125,11 @@ def order_by_commit_in_team(
                     )
                     person_found_by_name = True
         if not person_found and not person_found_by_name:
-            logging.debug("Could not find %s in %s !", team_member, team_name)
+            LOGGER.debug("Could not find %s in %s !", team_member, team_name)
             # new_team.insert(team_index, f" {team_member}")
     for i, person_not_found in enumerate(existing_persons):
         if i not in consumed:
-            logging.debug("%s, '%s' was not consumed.", i, person_not_found)
+            LOGGER.debug("%s, '%s' was not consumed.", i, person_not_found)
             new_team.insert(i, person_not_found)
     return "\n-".join(new_team)
 
@@ -160,7 +163,7 @@ def add_email_if_missing(current_result: str, teams: dict[str, list[Person]]) ->
             new_teams.append(new_team)
             continue
         team_members = teams[team_name]
-        logging.debug("Updating team %s", team_name)
+        LOGGER.debug("Updating team %s", team_name)
         section_slice = current_result[begin:end]
         for team_member in team_members:
             if not person_should_be_shown(team_member):
@@ -186,7 +189,7 @@ def add_email_if_missing(current_result: str, teams: dict[str, list[Person]]) ->
                     new_team, team_member, team_members
                 )
             else:
-                logging.warning(
+                LOGGER.warning(
                     "'%s' was not treated as there's no email.", team_member
                 )
         new_teams.append(new_team)
@@ -206,11 +209,11 @@ def _add_email_to_existing(
     if not team_member.mail:
         return new_team
     if team_member.name.find(" ") != -1:
-        logging.debug("For %s in %s: Adding email", team_member, team_name)
+        LOGGER.debug("For %s in %s: Adding email", team_member, team_name)
         return new_team.replace(
             team_member.name, f"{team_member.name} {team_member.mail}"
         )
-    logging.debug(
+    LOGGER.debug(
         "For %s, there's only a one word name not replacing "
         "anything but it exists.",
         repr(team_member),
@@ -292,11 +295,12 @@ def _end_of_person_entry(lines: list[str], person_line_idx: int) -> int:
 def check_for_duplication(current_result: str, team_member: Person) -> None:
     assert team_member.mail
     if current_result.count(team_member.mail) != 1:
-        raise RuntimeError(f"{team_member} is duplicated")
+        msg = f"{team_member} is duplicated"
+        raise RuntimeError(msg)
     name_count = current_result.count(team_member.name)
     name_in_email = team_member.name in team_member.mail
     if (name_count > 1 and not name_in_email) or (name_count > 2 and name_in_email):
-        logging.info(
+        LOGGER.info(
             "It's possible that %s is duplicated, please check by yourself",
             team_member,
         )
