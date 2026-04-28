@@ -2,7 +2,6 @@ from __future__ import annotations
 
 import logging
 import re
-from difflib import SequenceMatcher
 from typing import TYPE_CHECKING
 
 from contributors_txt.create_content import (
@@ -18,10 +17,6 @@ if TYPE_CHECKING:
     from pathlib import Path
 
 LOGGER = logging.getLogger(__name__)
-
-
-def similar(a_string: str, another_string: str) -> float:
-    return SequenceMatcher(None, a_string, another_string).ratio()
 
 
 def update_content(
@@ -54,7 +49,7 @@ def update_teams(current_result: str, persons: dict[str, Person]) -> str:
         return current_result
     current_result = add_email_if_missing(current_result, teams)
     check_no_email(current_result)
-    # current_result = order_by_commit(current_result, teams)
+    current_result = reorder_existing_by_commits(current_result, teams)
     if current_result[-1] != "\n":
         current_result += "\n"
     return current_result
@@ -66,85 +61,71 @@ def check_no_email(current_result: str) -> None:
             LOGGER.warning("There's no email in %s", part)
 
 
-def order_by_commit(current_result: str, teams: dict[str, list[Person]]) -> str:
-    new_teams: list[str] = []
-    team_boundary = get_team_boundary(current_result, list(teams.keys()))
-    for team_name, team_members in teams.items():
-        new_teams.append(
-            order_by_commit_in_team(
-                current_result, team_boundary, team_members, team_name
-            )
-        )
-    return "".join(new_teams)
-
-
-def order_by_commit_in_team(
-    current_result: str,
-    team_boundary: dict[str, tuple[int, int]],
-    team_members: list[Person],
-    team_name: str,
+def reorder_existing_by_commits(
+    current_result: str, teams: dict[str, list[Person]]
 ) -> str:
-    # pylint: disable=too-many-locals
-    LOGGER.debug("Updating team %s", team_name)
-    begin, end = team_boundary[team_name]
-    new_team: list[str] = []
-    existing_persons = current_result[begin:end].split("\n-")
-    LOGGER.debug(existing_persons[0])
-    consumed: list[int] = []
-    for _, team_member in enumerate(team_members):
-        if not person_should_be_shown(team_member):
+    if not teams:
+        return current_result
+    team_boundary = get_team_boundary(current_result, list(teams.keys()))
+    parts: list[str] = []
+    for team_name in sorted(team_boundary, key=lambda t: team_boundary[t][0]):
+        begin, end = team_boundary[team_name]
+        section = current_result[begin:end]
+        if team_name == "Header" or team_name not in teams:
+            parts.append(section)
             continue
-        # LOGGER.debug(f"Finding the content for %s", repr(team_member))
-        person_found = False
-        person_found_by_name = False
-        for i, existing_person in enumerate(existing_persons):
-            if team_member.mail and team_member.mail in existing_person:
-                # LOGGER.debug(f"Placing {team_member.name}: {existing_person}")
-                # if person_found:
-                #     raise RuntimeError(
-                #         f"{team_member.mail} is duplicated {existing_person}!"
-                #     )
-                person_found = add_person(
-                    consumed, existing_person, i, new_team, person_found
-                )
-            if team_member.name in existing_person and team_member.mail is None:
-                if similar(team_member.name, existing_person) >= 0.9:
-                    LOGGER.info(
-                        "Found %s by name and it's really close.", repr(team_member)
-                    )
-                    person_found = add_person(
-                        consumed, existing_person, i, new_team, person_found
-                    )
-                else:
-                    # The name is not sufficient
-                    LOGGER.warning(
-                        "Found %s in '%s' but not sure if it's really them (no mail),"
-                        " please check",
-                        repr(team_member),
-                        existing_person,
-                    )
-                    person_found_by_name = True
-        if not person_found and not person_found_by_name:
-            LOGGER.debug("Could not find %s in %s !", team_member, team_name)
-            # new_team.insert(team_index, f" {team_member}")
-    for i, person_not_found in enumerate(existing_persons):
-        if i not in consumed:
-            LOGGER.debug("%s, '%s' was not consumed.", i, person_not_found)
-            new_team.insert(i, person_not_found)
-    return "\n-".join(new_team)
+        parts.append(_reorder_section(section, teams[team_name]))
+    return "".join(parts)
 
 
-def add_person(
-    consumed: list[int],
-    existing_person: str,
-    i: int,
-    new_team: list[str],
-    person_found: bool,
-) -> bool:
-    new_team.append(existing_person)
-    person_found = True
-    consumed.append(i)
-    return person_found
+def _reorder_section(section: str, members: list[Person]) -> str:
+    lines = section.split("\n")
+    blocks = _person_blocks(lines)
+    if len(blocks) < 2:
+        return section
+    matched = _match_blocks_to_members(lines, blocks, members)
+    if len(matched) < 2:
+        return section
+    new_block_order = list(range(len(blocks)))
+    matched_sorted = sorted(matched, key=lambda x: -x[1])
+    for (slot, _), (orig_bi, _) in zip(matched, matched_sorted):
+        new_block_order[slot] = orig_bi
+    rebuilt: list[str] = list(lines[: blocks[0][0]])
+    for bi in new_block_order:
+        start, stop = blocks[bi]
+        rebuilt.extend(lines[start:stop])
+    rebuilt.extend(lines[blocks[-1][1] :])
+    return "\n".join(rebuilt)
+
+
+def _match_blocks_to_members(
+    lines: list[str], blocks: list[tuple[int, int]], members: list[Person]
+) -> list[tuple[int, int]]:
+    """Return (block index, commit count) pairs for blocks matched by mail."""
+    members_by_mail = {m.mail: m for m in members if m.mail}
+    matched: list[tuple[int, int]] = []
+    for bi, (start, stop) in enumerate(blocks):
+        block_text = "\n".join(lines[start:stop])
+        for mail, member in members_by_mail.items():
+            if mail in block_text:
+                matched.append((bi, member.number_of_commits))
+                break
+    return matched
+
+
+def _person_blocks(lines: list[str]) -> list[tuple[int, int]]:
+    blocks: list[tuple[int, int]] = []
+    i = 0
+    while i < len(lines):
+        if lines[i].startswith("- "):
+            j = i + 1
+            while j < len(lines) and lines[j] and not lines[j].startswith("- "):
+                j += 1
+            blocks.append((i, j))
+            i = j
+        else:
+            i += 1
+    return blocks
 
 
 def add_email_if_missing(current_result: str, teams: dict[str, list[Person]]) -> str:

@@ -1,0 +1,45 @@
+# This file is autocompleted by 'contributors-txt',
+# using the configuration in 'script/.contributors_aliases.json'.
+# Do not add new persons manually and only add information without
+# using '-' as the line first character.
+# Please verify that your change are stable if you modify manually.
+
+Ex-maintainers
+--------------
+- Claudiu Popa <pcmanticore@gmail.com>
+- Sylvain Thénault <thenault@gmail.com>
+- Torsten Marek <shlomme@gmail.com>
+
+Maintainers
+-----------
+- Pierre Sassoulas <pierre.sassoulas@gmail.com>
+- Areveny <areveny@protonmail.com>
+- Florian Bruhin <me@the-compiler.org>
+- Jacob Walls <jacobtylerwalls@gmail.com>
+- Daniël van Noord <13665637+DanielNoord@users.noreply.github.com>
+- Marc Mueller <30130371+cdce8p@users.noreply.github.com>
+- Hippo91 <guillaume.peillex@gmail.com>
+- Bryce Guinta <bryce.paul.guinta@gmail.com>
+- Ceridwen <ceridwenv@gmail.com>
+- Mark Byrne <31762852+mbyrnepr2@users.noreply.github.com>
+- Łukasz Rogalski <rogalski.91@gmail.com>
+- Ashley Whetter <ashley@awhetter.co.uk>
+- Dimitri Prybysh <dmand@yandex.ru>
+
+
+Contributors
+------------
+- Nick Drozd <nicholasdrozd@gmail.com>
+- Emile Anclin <emile.anclin@logilab.fr>
+- correctmost <134317971+correctmost@users.noreply.github.com>
+
+Co-Author
+---------
+The following persons were credited manually but did not commit themselves
+under this name, or we did not manage to find their commits in the history.
+
+- François Mockers
+- platings
+- carl
+- alain lefroy
+- Mark Gius
