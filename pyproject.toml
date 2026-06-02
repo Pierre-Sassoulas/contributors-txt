@@ -43,7 +43,6 @@ scripts.contributors-txt-extract-comment = "contributors_txt.extract_comment:mai
 scripts.contributors-txt-normalize-configuration = "contributors_txt.normalize:main"
 
 [tool.setuptools]
-include-package-data = false
 packages.find.include = [
   "contributors_txt*",
 ]
@@ -51,6 +50,7 @@ packages.find.exclude = [
   "tests.*",
 ]
 packages.find.namespaces = false
+include-package-data = false
 
 [tool.setuptools_scm]
 
@@ -110,11 +110,9 @@ lint.ignore = [
 main.disable = [ "missing-docstring", "too-few-public-methods", "wrong-import-order" ]
 
 [tool.mypy]
-scripts_are_modules = true
-no_implicit_optional = true
 warn_redundant_casts = true
-show_error_codes = true
 strict = true
+scripts_are_modules = true
 overrides = [
   { module = [
     "setuptools",
@@ -123,6 +121,8 @@ overrides = [
     "pytest",
   ], ignore_missing_imports = true },
 ]
+no_implicit_optional = true
+show_error_codes = true
 
 [tool.pytest]
 ini_options.remaster-by-default = false
