@@ -14,7 +14,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Check out code from Github
-        uses: actions/checkout@v6.0.2
+        uses: actions/checkout@v6.0.3
         with:
           # setuptools-scm reads the version from the latest reachable git tag.
           fetch-depth: 0
