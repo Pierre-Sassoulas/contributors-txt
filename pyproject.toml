@@ -32,7 +32,7 @@ optional-dependencies.test = [
   "coverage<8",
   "coveralls",
   "pre-commit>=1.16",
-  "pylint==4.0.4",
+  "pylint==4.0.6",
   "pytest-cov",
   "pytest-remaster",
   "pytest-vcr",
