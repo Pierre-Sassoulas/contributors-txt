@@ -8,7 +8,7 @@ repos:
       - id: trailing-whitespace
       - id: end-of-file-fixer
   - repo: https://github.com/astral-sh/ruff-pre-commit
-    rev: "v0.15.18"
+    rev: "v0.15.20"
     hooks:
       - id: ruff
         args: ["--fix", "--unsafe-fixes"]
@@ -36,11 +36,11 @@ repos:
         require_serial: true
         additional_dependencies: ["pytest-remaster"]
   - repo: https://github.com/rbubley/mirrors-prettier
-    rev: v3.8.4
+    rev: v3.9.1
     hooks:
       - id: prettier
         args: [--prose-wrap=always, --print-width=88]
   - repo: https://github.com/tox-dev/pyproject-fmt
-    rev: "v2.25.0"
+    rev: "v2.25.1"
     hooks:
       - id: pyproject-fmt
