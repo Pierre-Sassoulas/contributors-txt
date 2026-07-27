@@ -79,18 +79,17 @@ def _save_merged_aliases(
 ) -> None:
     for person, group in merged:
         assert person.mail
-        bare_mail = person.mail[1:-1]
         aliases.append(
             Alias(
-                mails=[bare_mail],
-                authoritative_mail=bare_mail,
+                mails=[person.mail],
+                authoritative_mail=person.mail,
                 name=person.name,
                 team=person.team,
                 comment=person.comment or None,
             )
         )
         LOGGER.warning(
-            "%s committed under several names (%s): merged into '%s', "
+            "<%s> committed under several names (%s): merged into '%s', "
             "the name with the most commits.",
             person.mail,
             ", ".join(f"'{p.name}'" for p in group),
@@ -136,7 +135,7 @@ def _drop_duplicate_person_lines(
     for person in persons.values():
         if not person.mail:
             continue
-        matching = [b for b in blocks if person.mail in lines[b[0]]]
+        matching = [b for b in blocks if f"<{person.mail}>" in lines[b[0]]]
         if len(matching) < 2:
             continue
         keep = next((b for b in matching if person.name in lines[b[0]]), matching[0])
@@ -206,7 +205,7 @@ def _match_blocks_to_members(
     for bi, (start, stop) in enumerate(blocks):
         block_text = "\n".join(lines[start:stop])
         for mail, member in members_by_mail.items():
-            if mail in block_text:
+            if f"<{mail}>" in block_text:
                 matched.append((bi, member.number_of_commits))
                 break
     return matched
@@ -253,7 +252,7 @@ def add_email_if_missing(
             if not person_should_be_shown(team_member):
                 continue
             if team_member.name in section_slice:
-                if team_member.mail and team_member.mail in section_slice:
+                if team_member.mail and f"<{team_member.mail}>" in section_slice:
                     check_for_duplication(
                         current_result, team_member, configuration_file
                     )
@@ -261,10 +260,13 @@ def add_email_if_missing(
                     new_team = _add_email_to_existing(
                         new_team, team_member, team_name
                     )
-            elif team_member.mail is not None and team_member.mail in current_result:
+            elif (
+                team_member.mail is not None
+                and f"<{team_member.mail}>" in current_result
+            ):
                 base_message = (
                     f"'{team_member}' already exists in the file at "
-                    f"{current_result.find(team_member.mail)} "
+                    f"{current_result.find(f'<{team_member.mail}>')} "
                     f"({team_boundary}) but is not in the proper section, "
                     f"it should be '{team_name}', please fix manually. Did "
                     "you consider uniformizing the name ? :\n"
@@ -292,7 +294,7 @@ def _add_email_to_existing(
     if team_member.name.find(" ") != -1:
         LOGGER.debug("For %s in %s: Adding email", team_member, team_name)
         return new_team.replace(
-            team_member.name, f"{team_member.name} {team_member.mail}"
+            team_member.name, f"{team_member.name} <{team_member.mail}>"
         )
     LOGGER.debug(
         "For %s, there's only a one word name not replacing "
@@ -323,7 +325,7 @@ def _find_person_entries(
         if not line.startswith("- "):
             continue
         for tm in team_members:
-            if tm.mail and tm.mail in line:
+            if tm.mail and f"<{tm.mail}>" in line:
                 entries.append((i, tm.number_of_commits))
                 break
     return entries
@@ -379,7 +381,7 @@ def check_for_duplication(
     configuration_file: str = "the aliases file",
 ) -> None:
     assert team_member.mail
-    if current_result.count(team_member.mail) != 1:
+    if current_result.count(f"<{team_member.mail}>") != 1:
         raise RuntimeError(
             _duplication_error(current_result, team_member, configuration_file)
         )
@@ -396,24 +398,24 @@ def _duplication_error(
     current_result: str, team_member: Person, configuration_file: str
 ) -> str:
     assert team_member.mail
+    mail_tag = f"<{team_member.mail}>"
     occurrences = "\n".join(
         f"  line {lineno}: {line}"
         for lineno, line in enumerate(current_result.splitlines(), start=1)
-        if team_member.mail in line
+        if mail_tag in line
     )
-    bare_mail = team_member.mail[1:-1]
     alias_example = json.dumps(
-        {bare_mail: {"mails": [bare_mail], "name": team_member.name}},
+        {team_member.mail: {"mails": [team_member.mail], "name": team_member.name}},
         indent=2,
         ensure_ascii=False,
     )
     return (
-        f"{team_member.mail} appears multiple times in the contributors file "
+        f"{mail_tag} appears multiple times in the contributors file "
         "and could not be merged automatically:\n"
         f"{occurrences}\n"
         "To fix this:\n"
         "1. Merge these entries in the contributors file manually, keeping a "
-        f"single line for {team_member.mail}.\n"
+        f"single line for {mail_tag}.\n"
         "2. If the same person contributed under several names, add an entry "
         f"in '{configuration_file}' so a single name is always used for this "
         f"email, for example:\n{alias_example}\n"

@@ -55,9 +55,9 @@ class Person(NamedTuple):
     def get_template(self, template: str, other: Person | None = None) -> str:
         template += f'"{self.mail}": '
         template += "{"
-        mail = self.mail[1:-1] if self.mail is not None else ""
+        mail = self.mail if self.mail is not None else ""
         if other:
-            other_mail = other.mail[1:-1] if other.mail is not None else ""
+            other_mail = other.mail if other.mail is not None else ""
             return f"""{template}
             "mails": ["{mail}","{other_mail}"],
             "name": "{self.name}"
@@ -77,7 +77,7 @@ class Person(NamedTuple):
     def __str__(self) -> str:
         result = f"{self.name}"
         if self.mail:
-            result += f" {self.mail}"
+            result += f" <{self.mail}>"
         if self.comment:
             result += f"{self.comment}"
         return result
