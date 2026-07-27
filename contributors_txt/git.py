@@ -1,6 +1,8 @@
 from __future__ import annotations
 
+import logging
 import subprocess
+from typing import NamedTuple
 
 from contributors_txt.const import (
     DEFAULT_TEAM_ROLE,
@@ -8,6 +10,16 @@ from contributors_txt.const import (
     KNOWN_BOT_NAME_SUBSTRINGS,
 )
 from contributors_txt.model import Alias, Person
+
+LOGGER = logging.getLogger(__name__)
+
+
+class ShortlogResult(NamedTuple):
+    """Persons keyed by email (name when there is none), plus the groups of
+    persons that shared an email under several names and got merged."""
+
+    persons: dict[str, Person]
+    merged: list[tuple[Person, list[Person]]]
 
 # The explicit HEAD matters: without a revision and with a non-interactive
 # stdin (CI, cron), git shortlog reads the log from stdin and returns nothing.
@@ -47,8 +59,8 @@ def is_bot(name: str, mail: str | None) -> bool:
 
 def persons_from_shortlog(
     aliases: list[Alias], shortlog_output: str, no_bots: bool = False
-) -> dict[str, Person]:
-    persons: dict[str, Person] = {}
+) -> ShortlogResult:
+    groups: dict[str, list[Person]] = {}
     for unparsed_person in shortlog_output.split("\n"):
         if not unparsed_person:
             # Empty line in git output
@@ -57,10 +69,43 @@ def persons_from_shortlog(
         new_person = _parse_person(unparsed_person, aliases)
         if no_bots and is_bot(new_person.name, new_person.mail):
             continue
-        if new_person.name in persons:
-            new_person = persons[new_person.name] + new_person
-        persons[new_person.name] = new_person
-    return persons
+        groups.setdefault(new_person.mail or new_person.name, []).append(new_person)
+    persons: dict[str, Person] = {}
+    merged: list[tuple[Person, list[Person]]] = []
+    for key, group in groups.items():
+        person = _merge_group(group)
+        if len({p.name for p in group}) > 1:
+            merged.append((person, group))
+        persons[key] = person
+    _warn_about_same_name_with_several_mails(persons)
+    return ShortlogResult(persons, merged)
+
+
+def _merge_group(group: list[Person]) -> Person:
+    canonical = max(group, key=lambda p: p.number_of_commits)
+    if len(group) == 1:
+        return canonical
+    return Person(
+        sum(p.number_of_commits for p in group),
+        canonical.name,
+        canonical.mail,
+        canonical.team,
+        canonical.comment,
+    )
+
+
+def _warn_about_same_name_with_several_mails(persons: dict[str, Person]) -> None:
+    by_name: dict[str, list[Person]] = {}
+    for person in persons.values():
+        by_name.setdefault(person.name, []).append(person)
+    for name, group in by_name.items():
+        if len(group) > 1:
+            LOGGER.warning(
+                "'%s' appears with several emails (%s); if this is a single "
+                "person, add an alias to merge them.",
+                name,
+                ", ".join(f"<{p.mail}>" for p in group if p.mail),
+            )
 
 
 def _parse_person(unparsed_person: str, aliases: list[Alias]) -> Person:

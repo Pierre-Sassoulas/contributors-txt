@@ -3,6 +3,7 @@ from __future__ import annotations
 import logging
 from typing import TYPE_CHECKING
 
+from contributors_txt.aliases import save_merged_aliases
 from contributors_txt.const import DEFAULT_TEAM_ROLE, NO_SHOW_MAIL, NO_SHOW_NAME
 from contributors_txt.git import persons_from_shortlog
 
@@ -24,7 +25,9 @@ def create_content(
 # please do not modify manually
 
 """
-    persons = persons_from_shortlog(aliases, shortlog_output, no_bots=no_bots)
+    persons, merged = persons_from_shortlog(aliases, shortlog_output, no_bots=no_bots)
+    if merged:
+        save_merged_aliases(aliases, merged, configuration_file)
     result += add_teams(persons)
     result += add_contributors(persons)
     return result

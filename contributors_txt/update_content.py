@@ -3,16 +3,20 @@ from __future__ import annotations
 import json
 import logging
 import re
-from pathlib import Path
+from typing import TYPE_CHECKING
 
-from contributors_txt.aliases import dump_normalized_aliases
+from contributors_txt.aliases import save_merged_aliases
 from contributors_txt.create_content import (
     get_teams,
     line_for_person,
     person_should_be_shown,
 )
 from contributors_txt.git import persons_from_shortlog
-from contributors_txt.model import Alias, Person
+
+if TYPE_CHECKING:
+    from pathlib import Path
+
+    from contributors_txt.model import Alias, Person
 
 LOGGER = logging.getLogger(__name__)
 
@@ -32,10 +36,9 @@ def update_content(
 # Please verify that your change are stable if you modify manually.
 
 """
-    persons = persons_from_shortlog(aliases, shortlog_output, no_bots=no_bots)
-    merged = _merge_duplicate_names(persons)
+    persons, merged = persons_from_shortlog(aliases, shortlog_output, no_bots=no_bots)
     if merged:
-        _save_merged_aliases(aliases, merged, configuration_file)
+        save_merged_aliases(aliases, merged, configuration_file)
     with open(output, encoding="utf8") as f:
         current_output = f.read()
     return update_teams(
@@ -43,69 +46,6 @@ def update_content(
         persons,
         configuration_file,
     )
-
-
-def _merge_duplicate_names(
-    persons: dict[str, Person],
-) -> list[tuple[Person, list[Person]]]:
-    """Merge persons sharing an email, keeping the name with the most commits."""
-    by_mail: dict[str, list[Person]] = {}
-    for person in persons.values():
-        if person.mail:
-            by_mail.setdefault(person.mail, []).append(person)
-    merged: list[tuple[Person, list[Person]]] = []
-    for group in by_mail.values():
-        if len(group) < 2:
-            continue
-        canonical = max(group, key=lambda p: p.number_of_commits)
-        for person in group:
-            del persons[person.name]
-        new_person = Person(
-            sum(p.number_of_commits for p in group),
-            canonical.name,
-            canonical.mail,
-            canonical.team,
-            canonical.comment,
-        )
-        persons[canonical.name] = new_person
-        merged.append((new_person, group))
-    return merged
-
-
-def _save_merged_aliases(
-    aliases: list[Alias],
-    merged: list[tuple[Person, list[Person]]],
-    configuration_file: str,
-) -> None:
-    for person, group in merged:
-        assert person.mail
-        aliases.append(
-            Alias(
-                mails=[person.mail],
-                authoritative_mail=person.mail,
-                name=person.name,
-                team=person.team,
-                comment=person.comment or None,
-            )
-        )
-        LOGGER.warning(
-            "<%s> committed under several names (%s): merged into '%s', "
-            "the name with the most commits.",
-            person.mail,
-            ", ".join(f"'{p.name}'" for p in group),
-            person.name,
-        )
-    if Path(configuration_file).is_file():
-        dump_normalized_aliases(aliases, configuration_file)
-        LOGGER.warning(
-            "Added the merged names to '%s' as aliases.", configuration_file
-        )
-    else:
-        LOGGER.warning(
-            "Could not save the aliases for the merged names because '%s' "
-            "is not a file, the merge will happen again on the next run.",
-            configuration_file,
-        )
 
 
 def update_teams(
