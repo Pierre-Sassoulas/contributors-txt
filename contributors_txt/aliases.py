@@ -99,6 +99,7 @@ def dump_normalized_aliases(aliases: list[Alias], output: Path | str) -> None:
     content = get_new_aliases(aliases)
     with open(output, "w", encoding="utf8") as f:
         json.dump(content, f, indent=4, sort_keys=True, ensure_ascii=False)
+        f.write("\n")
 
 
 def get_new_aliases(

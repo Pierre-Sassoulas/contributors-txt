@@ -10,7 +10,7 @@ from contributors_txt.const import DEFAULT_CONTRIBUTOR_PATH
 
 
 def parse_args(args: list[str] | None = None) -> argparse.Namespace:
-    parser = argparse.ArgumentParser(__doc__)
+    parser = argparse.ArgumentParser(description=__doc__)
     add_default_arguments(parser)
     parser.add_argument(
         "-o",
