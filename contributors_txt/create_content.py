@@ -42,7 +42,9 @@ def add_contributors(persons: dict[str, Person]) -> str:
 
 
 def line_for_person(person: Person) -> str:
-    assert person.mail, f"{person} do not have mail"
+    if not person.mail:
+        msg = f"{person} does not have an email"
+        raise ValueError(msg)
     return f"- {person}\n"
 
 
