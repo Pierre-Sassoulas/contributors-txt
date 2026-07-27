@@ -1,20 +1,19 @@
 from __future__ import annotations
 
+import json
 import logging
 import re
-from typing import TYPE_CHECKING
+from pathlib import Path
 
 from contributors_txt.create_content import (
     Alias,
     Person,
+    dump_normalized_aliases,
     get_teams,
     line_for_person,
     person_should_be_shown,
     persons_from_shortlog,
 )
-
-if TYPE_CHECKING:
-    from pathlib import Path
 
 LOGGER = logging.getLogger(__name__)
 
@@ -35,24 +34,125 @@ def update_content(
 
 """
     persons = persons_from_shortlog(aliases, shortlog_output, no_bots=no_bots)
+    merged = _merge_duplicate_names(persons)
+    if merged:
+        _save_merged_aliases(aliases, merged, configuration_file)
     with open(output, encoding="utf8") as f:
         current_output = f.read()
     return update_teams(
         current_output if header in current_output else header + current_output,
         persons,
+        configuration_file,
     )
 
 
-def update_teams(current_result: str, persons: dict[str, Person]) -> str:
+def _merge_duplicate_names(
+    persons: dict[str, Person],
+) -> list[tuple[Person, list[Person]]]:
+    """Merge persons sharing an email, keeping the name with the most commits."""
+    by_mail: dict[str, list[Person]] = {}
+    for person in persons.values():
+        if person.mail:
+            by_mail.setdefault(person.mail, []).append(person)
+    merged: list[tuple[Person, list[Person]]] = []
+    for group in by_mail.values():
+        if len(group) < 2:
+            continue
+        canonical = max(group, key=lambda p: p.number_of_commits)
+        for person in group:
+            del persons[person.name]
+        new_person = Person(
+            sum(p.number_of_commits for p in group),
+            canonical.name,
+            canonical.mail,
+            canonical.team,
+            canonical.comment,
+        )
+        persons[canonical.name] = new_person
+        merged.append((new_person, group))
+    return merged
+
+
+def _save_merged_aliases(
+    aliases: list[Alias],
+    merged: list[tuple[Person, list[Person]]],
+    configuration_file: str,
+) -> None:
+    for person, group in merged:
+        assert person.mail
+        bare_mail = person.mail[1:-1]
+        aliases.append(
+            Alias(
+                mails=[bare_mail],
+                authoritative_mail=bare_mail,
+                name=person.name,
+                team=person.team,
+                comment=person.comment or None,
+            )
+        )
+        LOGGER.warning(
+            "%s committed under several names (%s): merged into '%s', "
+            "the name with the most commits.",
+            person.mail,
+            ", ".join(f"'{p.name}'" for p in group),
+            person.name,
+        )
+    if Path(configuration_file).is_file():
+        dump_normalized_aliases(aliases, configuration_file)
+        LOGGER.warning(
+            "Added the merged names to '%s' as aliases.", configuration_file
+        )
+    else:
+        LOGGER.warning(
+            "Could not save the aliases for the merged names because '%s' "
+            "is not a file, the merge will happen again on the next run.",
+            configuration_file,
+        )
+
+
+def update_teams(
+    current_result: str,
+    persons: dict[str, Person],
+    configuration_file: str = "the aliases file",
+) -> str:
     teams = get_teams(persons, exclude_standard=False)
     if not teams:
         return current_result
-    current_result = add_email_if_missing(current_result, teams)
+    current_result = _drop_duplicate_person_lines(current_result, persons)
+    current_result = add_email_if_missing(current_result, teams, configuration_file)
     check_no_email(current_result)
     current_result = reorder_existing_by_commits(current_result, teams)
     if current_result[-1] != "\n":
         current_result += "\n"
     return current_result
+
+
+def _drop_duplicate_person_lines(
+    current_result: str, persons: dict[str, Person]
+) -> str:
+    """Remove entries whose email is already listed under another entry."""
+    lines = current_result.split("\n")
+    blocks = _person_blocks(lines)
+    to_drop: set[int] = set()
+    for person in persons.values():
+        if not person.mail:
+            continue
+        matching = [b for b in blocks if person.mail in lines[b[0]]]
+        if len(matching) < 2:
+            continue
+        keep = next((b for b in matching if person.name in lines[b[0]]), matching[0])
+        for block in matching:
+            if block == keep:
+                continue
+            LOGGER.warning(
+                "Removing '%s', a duplicate of '%s'.",
+                lines[block[0]],
+                lines[keep[0]],
+            )
+            to_drop.update(range(*block))
+    if not to_drop:
+        return current_result
+    return "\n".join(line for i, line in enumerate(lines) if i not in to_drop)
 
 
 def check_no_email(current_result: str) -> None:
@@ -128,7 +228,11 @@ def _person_blocks(lines: list[str]) -> list[tuple[int, int]]:
     return blocks
 
 
-def add_email_if_missing(current_result: str, teams: dict[str, list[Person]]) -> str:
+def add_email_if_missing(
+    current_result: str,
+    teams: dict[str, list[Person]],
+    configuration_file: str = "the aliases file",
+) -> str:
     new_teams: list[str] = []
     team_boundary = get_team_boundary(current_result, list(teams.keys()))
     being_header, end_header = team_boundary["Header"]
@@ -150,10 +254,14 @@ def add_email_if_missing(current_result: str, teams: dict[str, list[Person]]) ->
             if not person_should_be_shown(team_member):
                 continue
             if team_member.name in section_slice:
-                new_team = _add_email_to_existing(
-                    current_result, new_team, team_member, team_name,
-                    section_slice,
-                )
+                if team_member.mail and team_member.mail in section_slice:
+                    check_for_duplication(
+                        current_result, team_member, configuration_file
+                    )
+                else:
+                    new_team = _add_email_to_existing(
+                        new_team, team_member, team_name
+                    )
             elif team_member.mail is not None and team_member.mail in current_result:
                 base_message = (
                     f"'{team_member}' already exists in the file at "
@@ -178,15 +286,8 @@ def add_email_if_missing(current_result: str, teams: dict[str, list[Person]]) ->
 
 
 def _add_email_to_existing(
-    current_result: str,
-    new_team: str,
-    team_member: Person,
-    team_name: str,
-    section_slice: str,
+    new_team: str, team_member: Person, team_name: str
 ) -> str:
-    if team_member.mail and team_member.mail in section_slice:
-        check_for_duplication(current_result, team_member)
-        return new_team
     if not team_member.mail:
         return new_team
     if team_member.name.find(" ") != -1:
@@ -273,11 +374,16 @@ def _end_of_person_entry(lines: list[str], person_line_idx: int) -> int:
     return pos
 
 
-def check_for_duplication(current_result: str, team_member: Person) -> None:
+def check_for_duplication(
+    current_result: str,
+    team_member: Person,
+    configuration_file: str = "the aliases file",
+) -> None:
     assert team_member.mail
     if current_result.count(team_member.mail) != 1:
-        msg = f"{team_member} is duplicated"
-        raise RuntimeError(msg)
+        raise RuntimeError(
+            _duplication_error(current_result, team_member, configuration_file)
+        )
     name_count = current_result.count(team_member.name)
     name_in_email = team_member.name in team_member.mail
     if (name_count > 1 and not name_in_email) or (name_count > 2 and name_in_email):
@@ -285,6 +391,35 @@ def check_for_duplication(current_result: str, team_member: Person) -> None:
             "It's possible that %s is duplicated, please check by yourself",
             team_member,
         )
+
+
+def _duplication_error(
+    current_result: str, team_member: Person, configuration_file: str
+) -> str:
+    assert team_member.mail
+    occurrences = "\n".join(
+        f"  line {lineno}: {line}"
+        for lineno, line in enumerate(current_result.splitlines(), start=1)
+        if team_member.mail in line
+    )
+    bare_mail = team_member.mail[1:-1]
+    alias_example = json.dumps(
+        {bare_mail: {"mails": [bare_mail], "name": team_member.name}},
+        indent=2,
+        ensure_ascii=False,
+    )
+    return (
+        f"{team_member.mail} appears multiple times in the contributors file "
+        "and could not be merged automatically:\n"
+        f"{occurrences}\n"
+        "To fix this:\n"
+        "1. Merge these entries in the contributors file manually, keeping a "
+        f"single line for {team_member.mail}.\n"
+        "2. If the same person contributed under several names, add an entry "
+        f"in '{configuration_file}' so a single name is always used for this "
+        f"email, for example:\n{alias_example}\n"
+        "Then run contributors-txt again."
+    )
 
 
 def get_team_boundary(

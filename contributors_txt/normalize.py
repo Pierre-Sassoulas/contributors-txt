@@ -1,15 +1,12 @@
 from __future__ import annotations
 
-import json
 import logging
 from typing import TYPE_CHECKING
 
 from contributors_txt.__main__ import parse_args, set_logging
-from contributors_txt.const import DEFAULT_TEAM_ROLE
-from contributors_txt.create_content import Alias, get_aliases
+from contributors_txt.create_content import dump_normalized_aliases, get_aliases
 
 if TYPE_CHECKING:
-    from collections.abc import Sequence
     from pathlib import Path
 
 LOGGER = logging.getLogger(__name__)
@@ -31,26 +28,3 @@ def normalize_configuration(
     aliases = get_aliases(aliases_file, normalize=True)
     set_logging(verbose)
     dump_normalized_aliases(aliases, output)
-
-
-def dump_normalized_aliases(aliases: list[Alias], output: Path | str) -> None:
-    content = get_new_aliases(aliases)
-    with open(output, "w", encoding="utf8") as f:
-        json.dump(content, f, indent=4, sort_keys=True, ensure_ascii=False)
-
-
-def get_new_aliases(
-    aliases: list[Alias],
-) -> dict[str | None, dict[str, Sequence[str] | str]]:
-    result = {}
-    for alias in aliases:
-        updated_alias = {
-            "mails": sorted(alias.mails),
-            "name": alias.name,
-        }
-        if alias.team != DEFAULT_TEAM_ROLE:
-            updated_alias["team"] = alias.team
-        if alias.comment:
-            updated_alias["comment"] = alias.comment
-        result[alias.authoritative_mail] = updated_alias
-    return result

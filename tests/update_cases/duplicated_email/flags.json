@@ -1,0 +1,4 @@
+{
+  "check_aliases": true,
+  "configuration_file": "script/.contributors_aliases.json"
+}
