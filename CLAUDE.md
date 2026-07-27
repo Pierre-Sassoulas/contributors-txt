@@ -30,6 +30,8 @@ Activate the venv first: `source venv/bin/activate`
 - `contributors_txt/git.py` — Runs `git shortlog` and parses its output into `Person`s
 - `contributors_txt/create_content.py` — Builds CONTRIBUTORS content from scratch
   (sorted by commits descending)
+- `contributors_txt/document.py` — Lossless structural model of a CONTRIBUTORS file
+  (`parse` → `Document`/`Section`/`Entry` → `render`), used by the update path
 - `contributors_txt/update_content.py` — Updates existing files: adds missing emails,
   inserts new contributors in commit-count order, auto-merges contributors appearing
   under several names (and persists the merge in the aliases file)

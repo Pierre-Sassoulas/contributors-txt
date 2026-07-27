@@ -1,0 +1,11 @@
+# This file is autocompleted by 'contributors-txt',
+# using the configuration in 'aliases.json'.
+# Do not add new persons manually and only add information without
+# using '-' as the line first character.
+# Please verify that your change are stable if you modify manually.
+
+Contributors
+------------
+- Alice Smith <alice@example.com>  # 30 commits
+- Bob <bob@example.com>  # 5 commits
+  pairing with Alice Smith <alice@example.com>

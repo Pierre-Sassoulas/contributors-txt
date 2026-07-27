@@ -6,6 +6,7 @@ from pathlib import Path
 
 import pytest
 from contributors_txt.aliases import get_aliases
+from contributors_txt.document import parse
 from contributors_txt.update_content import update_content
 from pytest_remaster import CaseData, GoldenMaster, discover_test_cases
 
@@ -53,6 +54,16 @@ def test_update_content(
             aliases_path.read_text(encoding="utf8"),
             case.input / "expected_aliases.json",
         )
+    # Updating the result again (with the possibly rewritten aliases) is a no-op
+    contributors_path.write_text(result, encoding="utf8")
+    kwargs["aliases"] = get_aliases(aliases_path)
+    assert update_content(**kwargs) == result
+
+
+@pytest.mark.parametrize("case", discover_test_cases(CASES_DIR))
+def test_parse_render_round_trip(case: CaseData) -> None:
+    text = (case.input / "contributors.txt").read_text(encoding="utf8")
+    assert parse(text).render() == text
 
 
 def _annotate_with_commit_counts(result: str, shortlog: str) -> str:

@@ -1,0 +1,1 @@
+'Alice Smith <alice@example.com>' is listed in the 'Maintainers' section but their team is 'Contributors'. Move the entry manually, or fix the alias in 'aliases.json'.

@@ -1,0 +1,13 @@
+# This file is autocompleted by 'contributors-txt',
+# using the configuration in 'aliases.json'.
+# Do not add new persons manually and only add information without
+# using '-' as the line first character.
+# Please verify that your change are stable if you modify manually.
+
+Maintainers
+-----------
+- Alice Smith <alice@example.com>
+
+Contributors
+------------
+- Bob <bob@example.com>
