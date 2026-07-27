@@ -26,16 +26,24 @@ class Person(NamedTuple):
 
     def __add__(self, other: Person) -> Person:  # type: ignore[override]
         assert self.name == other.name, f"{self.name} != {other.name}"
-        template = (
-            f"Mails are not the same: {self.mail} != {other.mail} "
-            f"for {self} vs {other}:\n"
-        )
-        template = self.get_template(template, other)
-        if self.team != DEFAULT_TEAM_ROLE:
-            template += f',\n"team": "{self.team}"'
-        template += "}"
-        assert other.mail is None or self.mail == other.mail, template
-        assert self.team == other.team
+        if other.mail is not None and self.mail != other.mail:
+            template = (
+                f"Mails are not the same: {self.mail} != {other.mail} "
+                f"for {self} vs {other}:\n"
+            )
+            template = self.get_template(template, other)
+            if self.team != DEFAULT_TEAM_ROLE:
+                template += f',\n"team": "{self.team}"'
+            template += "}"
+            raise RuntimeError(template)
+        if self.team != other.team:
+            msg = (
+                f"'{self.name}' is in two teams at once ('{self.team}' != "
+                f"'{other.team}'), please fix the aliases file."
+            )
+            raise RuntimeError(
+                msg
+            )
         return Person(
             self.number_of_commits + other.number_of_commits,
             self.name,
