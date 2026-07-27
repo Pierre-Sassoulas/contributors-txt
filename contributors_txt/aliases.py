@@ -23,14 +23,19 @@ def get_aliases(
         for alias in parsed_aliases:
             # logging.debug("Alias: %s", alias)
             if isinstance(alias, str):
-                if "team" not in parsed_aliases[alias]:
-                    parsed_aliases[alias]["team"] = DEFAULT_TEAM_ROLE
-                if "name" in parsed_aliases[alias]:
-                    python_alias = Alias(
-                        authoritative_mail=alias, **parsed_aliases[alias]
+                entry = parsed_aliases[alias]
+                if "team" not in entry:
+                    entry["team"] = DEFAULT_TEAM_ROLE
+                if "name" in entry:
+                    python_alias = Alias(authoritative_mail=alias, **entry)
+                elif "authoritative_mail" in entry:
+                    python_alias = Alias(name=alias, **entry)
+                else:
+                    msg = (
+                        f"Malformed alias entry '{alias}' in '{aliases_file}': "
+                        "it must contain a 'name' or an 'authoritative_mail' key."
                     )
-                elif "authoritative_mail" in parsed_aliases[alias]:
-                    python_alias = Alias(name=alias, **parsed_aliases[alias])
+                    raise ValueError(msg)
             else:
                 if not normalize:
                     warnings.warn(
@@ -43,7 +48,6 @@ def get_aliases(
                 if "team" not in alias:
                     alias["team"] = DEFAULT_TEAM_ROLE
                 python_alias = Alias(**alias)
-            # pylint: disable-next=possibly-used-before-assignment
             aliases.append(python_alias)
     return aliases
 

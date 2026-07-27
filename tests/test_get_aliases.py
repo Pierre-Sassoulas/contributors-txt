@@ -10,6 +10,15 @@ from pytest_remaster import CaseData, GoldenMaster, discover_test_cases
 CASES_DIR = Path(__file__).parent / "get_aliases_cases"
 
 
+def test_get_aliases_malformed_entry_raises(tmp_path: Path) -> None:
+    aliases_path = tmp_path / "aliases.json"
+    aliases_path.write_text(
+        '{"alice@example.com": {"mails": ["alice@example.com"]}}', encoding="utf8"
+    )
+    with pytest.raises(ValueError, match="Malformed alias entry"):
+        get_aliases(aliases_path)
+
+
 @pytest.mark.parametrize("case", discover_test_cases(CASES_DIR))
 def test_get_aliases(
     case: CaseData,
