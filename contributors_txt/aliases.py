@@ -1,7 +1,9 @@
 from __future__ import annotations
 
 import json
+import logging
 import warnings
+from pathlib import Path
 from typing import TYPE_CHECKING
 
 from contributors_txt.const import DEFAULT_TEAM_ROLE
@@ -9,7 +11,10 @@ from contributors_txt.model import Alias
 
 if TYPE_CHECKING:
     from collections.abc import Sequence
-    from pathlib import Path
+
+    from contributors_txt.model import Person
+
+LOGGER = logging.getLogger(__name__)
 
 
 def get_aliases(
@@ -50,6 +55,44 @@ def get_aliases(
                 python_alias = Alias(**alias)
             aliases.append(python_alias)
     return aliases
+
+
+def save_merged_aliases(
+    aliases: list[Alias],
+    merged: list[tuple[Person, list[Person]]],
+    configuration_file: str,
+) -> None:
+    """Persist the aliases of persons merged from several names, so the
+    chosen name stays stable across runs."""
+    for person, group in merged:
+        assert person.mail
+        aliases.append(
+            Alias(
+                mails=[person.mail],
+                authoritative_mail=person.mail,
+                name=person.name,
+                team=person.team,
+                comment=person.comment or None,
+            )
+        )
+        LOGGER.warning(
+            "<%s> committed under several names (%s): merged into '%s', "
+            "the name with the most commits.",
+            person.mail,
+            ", ".join(f"'{p.name}'" for p in group),
+            person.name,
+        )
+    if Path(configuration_file).is_file():
+        dump_normalized_aliases(aliases, configuration_file)
+        LOGGER.warning(
+            "Added the merged names to '%s' as aliases.", configuration_file
+        )
+    else:
+        LOGGER.warning(
+            "Could not save the aliases for the merged names because '%s' "
+            "is not a file, the merge will happen again on the next run.",
+            configuration_file,
+        )
 
 
 def dump_normalized_aliases(aliases: list[Alias], output: Path | str) -> None:

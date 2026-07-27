@@ -2,8 +2,6 @@ from __future__ import annotations
 
 from typing import NamedTuple
 
-from contributors_txt.const import DEFAULT_TEAM_ROLE
-
 
 class Alias(NamedTuple):
     mails: list[str]
@@ -23,34 +21,6 @@ class Person(NamedTuple):
     def __gt__(self, other: Person) -> bool:  # type: ignore[override]
         """Permit sorting contributors by number of commits."""
         return self.number_of_commits.__gt__(other.number_of_commits)
-
-    def __add__(self, other: Person) -> Person:  # type: ignore[override]
-        assert self.name == other.name, f"{self.name} != {other.name}"
-        if other.mail is not None and self.mail != other.mail:
-            template = (
-                f"Mails are not the same: {self.mail} != {other.mail} "
-                f"for {self} vs {other}:\n"
-            )
-            template = self.get_template(template, other)
-            if self.team != DEFAULT_TEAM_ROLE:
-                template += f',\n"team": "{self.team}"'
-            template += "}"
-            raise RuntimeError(template)
-        if self.team != other.team:
-            msg = (
-                f"'{self.name}' is in two teams at once ('{self.team}' != "
-                f"'{other.team}'), please fix the aliases file."
-            )
-            raise RuntimeError(
-                msg
-            )
-        return Person(
-            self.number_of_commits + other.number_of_commits,
-            self.name,
-            self.mail,
-            self.team,
-            self.comment,
-        )
 
     def get_template(self, template: str, other: Person | None = None) -> str:
         template += f'"{self.mail}": '
