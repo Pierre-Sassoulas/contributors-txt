@@ -10,7 +10,7 @@ from contributors_txt.update_content import update_content
 
 
 def create_contributors_txt(
-    aliases_file: Path | str,
+    aliases_file: Path | str | None,
     output: Path | str,
     verbose: bool = False,
     no_bots: bool = False,

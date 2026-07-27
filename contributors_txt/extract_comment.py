@@ -13,13 +13,13 @@ from contributors_txt.model import Alias
 
 LOGGER = logging.getLogger(__name__)
 
-THE_REGEX = re.compile(
+PERSON_REGEX = re.compile(
     r"(?P<name>[\w\-\. ()'\",]+)<(?P<mail>[\w\.@+\- ]+)>(?P<comment>.*)", re.DOTALL
 )
 
 
 def main(args: list[str] | None = None) -> None:
-    parser = argparse.ArgumentParser(__doc__)
+    parser = argparse.ArgumentParser(description=__doc__)
     add_default_arguments(parser)
     parser.add_argument(
         "input",
@@ -91,7 +91,7 @@ def _get_input_to_parse(input_path: Path) -> list[dict[str, str]]:
         inputs = f.read()
     results = []
     for input_ in inputs.split("\n- "):
-        match = THE_REGEX.match(input_)
+        match = PERSON_REGEX.match(input_)
         if match is None:
             LOGGER.warning("Did not match the expected pattern in %s", input_)
         else:
