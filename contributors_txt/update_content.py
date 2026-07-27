@@ -8,12 +8,12 @@ from pathlib import Path
 from contributors_txt.create_content import (
     Alias,
     Person,
-    dump_normalized_aliases,
     get_teams,
     line_for_person,
     person_should_be_shown,
     persons_from_shortlog,
 )
+from contributors_txt.normalize import dump_normalized_aliases
 
 LOGGER = logging.getLogger(__name__)
 
