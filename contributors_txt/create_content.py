@@ -1,130 +1,15 @@
 from __future__ import annotations
 
-import json
 import logging
-import subprocess
-import warnings
-from typing import TYPE_CHECKING, NamedTuple
+from typing import TYPE_CHECKING
 
-from contributors_txt.const import (
-    DEFAULT_TEAM_ROLE,
-    GIT_SHORTLOG,
-    KNOWN_BOT_MAIL_SUBSTRINGS,
-    KNOWN_BOT_NAME_SUBSTRINGS,
-    NO_SHOW_MAIL,
-    NO_SHOW_NAME,
-)
+from contributors_txt.const import DEFAULT_TEAM_ROLE, NO_SHOW_MAIL, NO_SHOW_NAME
+from contributors_txt.git import persons_from_shortlog
 
 if TYPE_CHECKING:
-    from pathlib import Path
+    from contributors_txt.model import Alias, Person
 
 LOGGER = logging.getLogger(__name__)
-
-
-class Alias(NamedTuple):
-    mails: list[str]
-    authoritative_mail: str | None
-    name: str
-    team: str
-    comment: str | None = None
-
-
-def get_aliases(
-    aliases_file: Path | str | None, normalize: bool = False
-) -> list[Alias]:
-    aliases: list[Alias] = []
-    if aliases_file is None:
-        return aliases
-    with open(aliases_file, encoding="utf8") as f:
-        parsed_aliases = json.load(f)
-        for alias in parsed_aliases:
-            # logging.debug("Alias: %s", alias)
-            if isinstance(alias, str):
-                if "team" not in parsed_aliases[alias]:
-                    parsed_aliases[alias]["team"] = DEFAULT_TEAM_ROLE
-                if "name" in parsed_aliases[alias]:
-                    python_alias = Alias(
-                        authoritative_mail=alias, **parsed_aliases[alias]
-                    )
-                elif "authoritative_mail" in parsed_aliases[alias]:
-                    python_alias = Alias(name=alias, **parsed_aliases[alias])
-            else:
-                if not normalize:
-                    warnings.warn(
-                        "Using old copyrite format, you should use the configuration "
-                        "normalization with 'contributors-txt-normalize-configuration'",
-                        stacklevel=2,
-                    )
-                if "authoritative_mail" not in alias:
-                    alias["authoritative_mail"] = None
-                if "team" not in alias:
-                    alias["team"] = DEFAULT_TEAM_ROLE
-                python_alias = Alias(**alias)
-            # pylint: disable-next=possibly-used-before-assignment
-            aliases.append(python_alias)
-    return aliases
-
-
-class Person(NamedTuple):
-    number_of_commits: int
-    name: str
-    mail: str | None
-    team: str
-    comment: str | None
-
-    def __gt__(self, other: Person) -> bool:  # type: ignore[override]
-        """Permit sorting contributors by number of commits."""
-        return self.number_of_commits.__gt__(other.number_of_commits)
-
-    def __add__(self, other: Person) -> Person:  # type: ignore[override]
-        assert self.name == other.name, f"{self.name} != {other.name}"
-        template = (
-            f"Mails are not the same: {self.mail} != {other.mail} "
-            f"for {self} vs {other}:\n"
-        )
-        template = self.get_template(template, other)
-        if self.team != DEFAULT_TEAM_ROLE:
-            template += f',\n"team": "{self.team}"'
-        template += "}"
-        assert other.mail is None or self.mail == other.mail, template
-        assert self.team == other.team
-        return Person(
-            self.number_of_commits + other.number_of_commits,
-            self.name,
-            self.mail,
-            self.team,
-            self.comment,
-        )
-
-    def get_template(self, template: str, other: Person | None = None) -> str:
-        template += f'"{self.mail}": '
-        template += "{"
-        mail = self.mail[1:-1] if self.mail is not None else ""
-        if other:
-            other_mail = other.mail[1:-1] if other.mail is not None else ""
-            return f"""{template}
-            "mails": ["{mail}","{other_mail}"],
-            "name": "{self.name}"
-"""
-        return f"""{template}
-            "mails": ["{mail}"],
-            "name": "{self.name}"
-"""
-
-    def __repr__(self) -> str:
-        # return f"{self.name=} {self.mail=} {self.number_of_commits=} {self.team=}"
-        return (
-            f"name={self.name} mail={self.mail} "
-            f"number_of_commits={self.number_of_commits} team={self.team}"
-        )
-
-    def __str__(self) -> str:
-        result = f"{self.name}"
-        if self.mail:
-            result += f" {self.mail}"
-        if self.comment:
-            result += f"{self.comment}"
-        return result
 
 
 def create_content(
@@ -143,32 +28,6 @@ def create_content(
     result += add_teams(persons)
     result += add_contributors(persons)
     return result
-
-
-def is_bot(name: str, mail: str | None) -> bool:
-    if any(substring in name for substring in KNOWN_BOT_NAME_SUBSTRINGS):
-        return True
-    if not mail:
-        return False
-    return any(substring in mail for substring in KNOWN_BOT_MAIL_SUBSTRINGS)
-
-
-def persons_from_shortlog(
-    aliases: list[Alias], shortlog_output: str, no_bots: bool = False
-) -> dict[str, Person]:
-    persons: dict[str, Person] = {}
-    for unparsed_person in shortlog_output.split("\n"):
-        if not unparsed_person:
-            # Empty line in git output
-            continue
-        # logging.debug("Handling %s", unparsed_person)
-        new_person = _parse_person(unparsed_person, aliases)
-        if no_bots and is_bot(new_person.name, new_person.mail):
-            continue
-        if new_person.name in persons:
-            new_person = persons[new_person.name] + new_person
-        persons[new_person.name] = new_person
-    return persons
 
 
 def add_contributors(persons: dict[str, Person]) -> str:
@@ -223,31 +82,3 @@ def get_teams(
             members.append(person)
             teams[person.team] = members
     return teams
-
-
-def get_shortlog_output() -> str:
-    git_shortlog = subprocess.run(GIT_SHORTLOG, capture_output=True, check=False)
-    return git_shortlog.stdout.decode("utf8")
-
-
-def _parse_person(unparsed_person: str, aliases: list[Alias]) -> Person:
-    splitted_person = unparsed_person.split()
-    number_of_commit, *names = splitted_person[:-1]
-    name = " ".join(names)
-    mail: str | None = splitted_person[-1][1:-1]
-    team = DEFAULT_TEAM_ROLE
-    comment: str | None = ""
-    if mail == "none@none":
-        mail = None
-    for alias in aliases:
-        if mail and mail in alias.mails:
-            # logging.debug("Found an alias: %s", mail)
-            mail = alias.authoritative_mail
-            name = alias.name
-            team = alias.team
-            comment = alias.comment
-            break
-    # logging.debug("Person is aliased to %s %s %s", number_of_commit, name, mail)
-    return Person(
-        int(number_of_commit), name, f"<{mail}>" if mail else None, team, comment
-    )

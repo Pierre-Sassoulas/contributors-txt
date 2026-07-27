@@ -5,7 +5,7 @@ import shutil
 from pathlib import Path
 
 import pytest
-from contributors_txt.create_content import get_aliases
+from contributors_txt.aliases import get_aliases
 from contributors_txt.update_content import update_content
 from pytest_remaster import CaseData, GoldenMaster, discover_test_cases
 

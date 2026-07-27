@@ -5,15 +5,14 @@ import logging
 import re
 from pathlib import Path
 
+from contributors_txt.aliases import dump_normalized_aliases
 from contributors_txt.create_content import (
-    Alias,
-    Person,
     get_teams,
     line_for_person,
     person_should_be_shown,
-    persons_from_shortlog,
 )
-from contributors_txt.normalize import dump_normalized_aliases
+from contributors_txt.git import persons_from_shortlog
+from contributors_txt.model import Alias, Person
 
 LOGGER = logging.getLogger(__name__)
 

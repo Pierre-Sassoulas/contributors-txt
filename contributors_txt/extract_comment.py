@@ -6,10 +6,10 @@ import logging
 import re
 from pathlib import Path
 
+from contributors_txt.aliases import dump_normalized_aliases
 from contributors_txt.cli import add_default_arguments, set_logging
 from contributors_txt.const import DEFAULT_CONTRIBUTOR_PATH, DEFAULT_TEAM_ROLE
-from contributors_txt.create_content import Alias
-from contributors_txt.normalize import dump_normalized_aliases
+from contributors_txt.model import Alias
 
 LOGGER = logging.getLogger(__name__)
 
