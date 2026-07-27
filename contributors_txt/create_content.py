@@ -16,7 +16,6 @@ from contributors_txt.const import (
 )
 
 if TYPE_CHECKING:
-    from collections.abc import Sequence
     from pathlib import Path
 
 LOGGER = logging.getLogger(__name__)
@@ -64,29 +63,6 @@ def get_aliases(
             # pylint: disable-next=possibly-used-before-assignment
             aliases.append(python_alias)
     return aliases
-
-
-def dump_normalized_aliases(aliases: list[Alias], output: Path | str) -> None:
-    content = get_new_aliases(aliases)
-    with open(output, "w", encoding="utf8") as f:
-        json.dump(content, f, indent=4, sort_keys=True, ensure_ascii=False)
-
-
-def get_new_aliases(
-    aliases: list[Alias],
-) -> dict[str | None, dict[str, Sequence[str] | str]]:
-    result = {}
-    for alias in aliases:
-        updated_alias = {
-            "mails": sorted(alias.mails),
-            "name": alias.name,
-        }
-        if alias.team != DEFAULT_TEAM_ROLE:
-            updated_alias["team"] = alias.team
-        if alias.comment:
-            updated_alias["comment"] = alias.comment
-        result[alias.authoritative_mail] = updated_alias
-    return result
 
 
 class Person(NamedTuple):
