@@ -1,0 +1,6 @@
+{
+  "alice@example.com": {
+    "mails": ["alice@example.com"],
+    "name": "Alice Smith"
+  }
+}

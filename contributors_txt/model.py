@@ -22,21 +22,6 @@ class Person(NamedTuple):
         """Permit sorting contributors by number of commits."""
         return self.number_of_commits.__gt__(other.number_of_commits)
 
-    def get_template(self, template: str, other: Person | None = None) -> str:
-        template += f'"{self.mail}": '
-        template += "{"
-        mail = self.mail if self.mail is not None else ""
-        if other:
-            other_mail = other.mail if other.mail is not None else ""
-            return f"""{template}
-            "mails": ["{mail}","{other_mail}"],
-            "name": "{self.name}"
-"""
-        return f"""{template}
-            "mails": ["{mail}"],
-            "name": "{self.name}"
-"""
-
     def __repr__(self) -> str:
         # return f"{self.name=} {self.mail=} {self.number_of_commits=} {self.team=}"
         return (
