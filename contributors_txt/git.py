@@ -9,12 +9,32 @@ from contributors_txt.const import (
 )
 from contributors_txt.model import Alias, Person
 
-GIT_SHORTLOG = ["git", "shortlog", "--summary", "--numbered", "--email"]
+# The explicit HEAD matters: without a revision and with a non-interactive
+# stdin (CI, cron), git shortlog reads the log from stdin and returns nothing.
+GIT_SHORTLOG = ["git", "shortlog", "--summary", "--numbered", "--email", "HEAD"]
 
 
 def get_shortlog_output() -> str:
     git_shortlog = subprocess.run(GIT_SHORTLOG, capture_output=True, check=False)
-    return git_shortlog.stdout.decode("utf8")
+    command = " ".join(GIT_SHORTLOG)
+    if git_shortlog.returncode != 0:
+        msg = (
+            f"'{command}' failed with code {git_shortlog.returncode}: "
+            f"{git_shortlog.stderr.decode('utf8').strip()}"
+        )
+        raise RuntimeError(
+            msg
+        )
+    output = git_shortlog.stdout.decode("utf8")
+    if not output.strip():
+        msg = (
+            f"'{command}' returned no contributors, is this a git repository "
+            "with at least one commit?"
+        )
+        raise RuntimeError(
+            msg
+        )
+    return output
 
 
 def is_bot(name: str, mail: str | None) -> bool:
