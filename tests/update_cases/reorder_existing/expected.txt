@@ -12,26 +12,26 @@ Ex-maintainers
 
 Maintainers
 -----------
-- Pierre Sassoulas <pierre.sassoulas@gmail.com>
-- Areveny <areveny@protonmail.com>
-- Florian Bruhin <me@the-compiler.org>
-- Jacob Walls <jacobtylerwalls@gmail.com>
-- Daniël van Noord <13665637+DanielNoord@users.noreply.github.com>
-- Marc Mueller <30130371+cdce8p@users.noreply.github.com>
-- Hippo91 <guillaume.peillex@gmail.com>
-- Bryce Guinta <bryce.paul.guinta@gmail.com>
-- Ceridwen <ceridwenv@gmail.com>
-- Mark Byrne <31762852+mbyrnepr2@users.noreply.github.com>
-- Łukasz Rogalski <rogalski.91@gmail.com>
-- Ashley Whetter <ashley@awhetter.co.uk>
-- Dimitri Prybysh <dmand@yandex.ru>
+- Pierre Sassoulas <pierre.sassoulas@gmail.com>  # 5000 commits
+- Areveny <areveny@protonmail.com>  # 4000 commits
+- Florian Bruhin <me@the-compiler.org>  # 3500 commits
+- Jacob Walls <jacobtylerwalls@gmail.com>  # 3000 commits
+- Daniël van Noord <13665637+DanielNoord@users.noreply.github.com>  # 2500 commits
+- Marc Mueller <30130371+cdce8p@users.noreply.github.com>  # 2000 commits
+- Hippo91 <guillaume.peillex@gmail.com>  # 1500 commits
+- Bryce Guinta <bryce.paul.guinta@gmail.com>  # 1000 commits
+- Ceridwen <ceridwenv@gmail.com>  # 800 commits
+- Mark Byrne <31762852+mbyrnepr2@users.noreply.github.com>  # 600 commits
+- Łukasz Rogalski <rogalski.91@gmail.com>  # 500 commits
+- Ashley Whetter <ashley@awhetter.co.uk>  # 300 commits
+- Dimitri Prybysh <dmand@yandex.ru>  # 200 commits
 
 
 Contributors
 ------------
-- Nick Drozd <nicholasdrozd@gmail.com>
-- Emile Anclin <emile.anclin@logilab.fr>
-- correctmost <134317971+correctmost@users.noreply.github.com>
+- Nick Drozd <nicholasdrozd@gmail.com>  # 350 commits
+- Emile Anclin <emile.anclin@logilab.fr>  # 150 commits
+- correctmost <134317971+correctmost@users.noreply.github.com>  # 100 commits
 
 Co-Author
 ---------

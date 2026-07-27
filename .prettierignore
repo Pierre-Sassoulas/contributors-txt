@@ -3,3 +3,4 @@
 tests/extract_cases/**/expected.json
 tests/get_aliases_cases/**/expected.json
 tests/normalize_cases/**/expected.json
+tests/update_cases/**/expected_aliases.json

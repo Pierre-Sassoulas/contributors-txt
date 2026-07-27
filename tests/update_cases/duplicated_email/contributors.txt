@@ -1,0 +1,11 @@
+# This file is autocompleted by 'contributors-txt',
+# using the configuration in 'script/.contributors_aliases.json'.
+# Do not add new persons manually and only add information without
+# using '-' as the line first character.
+# Please verify that your change are stable if you modify manually.
+
+Contributors
+------------
+- Alice Smith <alice@example.com>
+- Bob <bob@example.com>
+- alice-gh <alice@example.com>

@@ -1,0 +1,15 @@
+<alice@example.com> appears multiple times in the contributors file and could not be merged automatically:
+  line 9: - Alice Smith <alice@example.com>
+  line 11:   pairing with Alice Smith <alice@example.com>
+To fix this:
+1. Merge these entries in the contributors file manually, keeping a single line for <alice@example.com>.
+2. If the same person contributed under several names, add an entry in 'aliases.json' so a single name is always used for this email, for example:
+{
+  "alice@example.com": {
+    "mails": [
+      "alice@example.com"
+    ],
+    "name": "Alice Smith"
+  }
+}
+Then run contributors-txt again.
