@@ -4,7 +4,7 @@ import json
 from pathlib import Path
 
 import pytest
-from contributors_txt.create_content import get_aliases
+from contributors_txt.aliases import get_aliases
 from pytest_remaster import CaseData, GoldenMaster, discover_test_cases
 
 CASES_DIR = Path(__file__).parent / "get_aliases_cases"
