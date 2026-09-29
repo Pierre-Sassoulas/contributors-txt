@@ -87,6 +87,11 @@ def _drop_duplicate_entries(document: Document, persons: dict[str, Person]) -> N
             LOGGER.warning(
                 "Removing '%s', a duplicate of '%s'.", entry.lines[0], keep.lines[0]
             )
+            # The text written about the removed entry belongs to the same person
+            inline_text = entry.lines[0].split(">", 1)[1]
+            if inline_text and keep.lines[0].endswith(">"):
+                keep.lines[0] += inline_text
+            keep.lines.extend(x for x in entry.lines[1:] if x not in keep.lines)
             for section in document.sections:
                 if entry in section.items:
                     section.items.remove(entry)
