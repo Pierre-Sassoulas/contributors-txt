@@ -65,6 +65,7 @@ Add a new case by creating a subdirectory with the input files, then run
 
 - `{"no_bots": true}` — pass `no_bots=True` to `create_content`
 - `{"expect_warning": "<substring>"}` — assert a warning matching the substring
+- `{"expect_no_warning": true}` — (create cases) assert no warning is logged
 - `{"expect_error": true}` — (update cases) assert `update_content` raises
   `RuntimeError` and golden-master the error message as `expected.txt`
 - `{"check_aliases": true}` — (update cases) also compare the rewritten aliases file

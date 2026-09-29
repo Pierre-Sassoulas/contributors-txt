@@ -11,7 +11,9 @@ CASES_DIR = Path(__file__).parent / "create_content_cases"
 
 
 @pytest.mark.parametrize("case", discover_test_cases(CASES_DIR))
-def test_create_content(case: CaseData, golden_master: GoldenMaster) -> None:
+def test_create_content(
+    case: CaseData, golden_master: GoldenMaster, caplog: pytest.LogCaptureFixture
+) -> None:
     shortlog = (case.input / "shortlog").read_text(encoding="utf8")
     flags_path = case.input / "flags.json"
     flags = json.loads(flags_path.read_text()) if flags_path.exists() else {}
@@ -21,4 +23,6 @@ def test_create_content(case: CaseData, golden_master: GoldenMaster) -> None:
         configuration_file="foo.conf",
         no_bots=flags.get("no_bots", False),
     )
+    if flags.get("expect_no_warning"):
+        assert not caplog.records
     golden_master.check(result, case.input / "expected.txt")
