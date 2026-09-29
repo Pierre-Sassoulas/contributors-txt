@@ -99,12 +99,14 @@ def _warn_about_same_name_with_several_mails(persons: dict[str, Person]) -> None
     for person in persons.values():
         by_name.setdefault(person.name, []).append(person)
     for name, group in by_name.items():
-        if len(group) > 1:
+        # A commit without email cannot be aliased, only several emails can
+        mails = [p.mail for p in group if p.mail]
+        if len(mails) > 1:
             LOGGER.warning(
                 "'%s' appears with several emails (%s); if this is a single "
                 "person, add an alias to merge them.",
                 name,
-                ", ".join(f"<{p.mail}>" for p in group if p.mail),
+                ", ".join(f"<{mail}>" for mail in mails),
             )
 
 
@@ -115,7 +117,8 @@ def _parse_person(unparsed_person: str, aliases: list[Alias]) -> Person:
     mail: str | None = splitted_person[-1][1:-1]
     team = DEFAULT_TEAM_ROLE
     comment: str | None = ""
-    if mail == "none@none":
+    if mail in {"", "none@none"}:
+        # '<>' or '<none@none>' in git history, there's no email to show
         mail = None
     for alias in aliases:
         if mail and mail in alias.mails:
